@@ -57,6 +57,7 @@
 		A20000000000000000000016 /* TrustEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustEngine.swift; sourceTree = "<group>"; };
 		A20000000000000000000017 /* ContactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsService.swift; sourceTree = "<group>"; };
 		A20000000000000000000018 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A20000000000000000000019 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +87,7 @@
 				A20000000000000000000001 /* HeyEchoApp.swift */,
 				A2000000000000000000000E /* Assets.xcassets */,
 				A20000000000000000000018 /* GoogleService-Info.plist */,
+				A20000000000000000000019 /* Info.plist */,
 				A50000000000000000000004 /* Models */,
 				A50000000000000000000005 /* Data */,
 				A50000000000000000000006 /* Theme */,
@@ -357,6 +359,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HeyEcho/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = HeyEcho;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				INFOPLIST_KEY_NSContactsUsageDescription = "HeyEcho matches your phone contacts to people already on the app so you can pick Personal GoTo's for trusted food recommendations.";
@@ -388,6 +391,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = HeyEcho/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = HeyEcho;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				INFOPLIST_KEY_NSContactsUsageDescription = "HeyEcho matches your phone contacts to people already on the app so you can pick Personal GoTo's for trusted food recommendations.";

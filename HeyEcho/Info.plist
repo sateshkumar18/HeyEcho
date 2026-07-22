@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.heyecho.india.phase1</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app-1-734055506868-ios-ef7a1179495fdb1ccb88e1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
