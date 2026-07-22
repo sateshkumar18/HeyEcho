@@ -1,0 +1,442 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* HeyEchoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* HeyEchoApp.swift */; };
+		A10000000000000000000002 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* RootView.swift */; };
+		A10000000000000000000003 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* AppTheme.swift */; };
+		A10000000000000000000004 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* Models.swift */; };
+		A10000000000000000000005 /* StaticData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* StaticData.swift */; };
+		A10000000000000000000006 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* AppState.swift */; };
+		A10000000000000000000007 /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* SharedComponents.swift */; };
+		A10000000000000000000008 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* OnboardingFlowView.swift */; };
+		A10000000000000000000009 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* HomeView.swift */; };
+		A1000000000000000000000A /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* SearchView.swift */; };
+		A1000000000000000000000B /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* BrowseView.swift */; };
+		A1000000000000000000000C /* BusinessDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* BusinessDetailView.swift */; };
+		A1000000000000000000000D /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* ProfileView.swift */; };
+		A1000000000000000000000E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* Assets.xcassets */; };
+		A1000000000000000000000F /* FirebaseBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000F /* FirebaseBootstrap.swift */; };
+		A10000000000000000000010 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* AuthService.swift */; };
+		A10000000000000000000011 /* FirestoreRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* FirestoreRepository.swift */; };
+		A10000000000000000000012 /* SeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* SeedService.swift */; };
+		A10000000000000000000013 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B10000000000000000000001 /* FirebaseAuth */; };
+		A10000000000000000000014 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = B10000000000000000000002 /* FirebaseFirestore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A30000000000000000000001 /* HeyEcho.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeyEcho.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000001 /* HeyEchoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeyEchoApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000002 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		A20000000000000000000004 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		A20000000000000000000005 /* StaticData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticData.swift; sourceTree = "<group>"; };
+		A20000000000000000000006 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		A20000000000000000000007 /* SharedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedComponents.swift; sourceTree = "<group>"; };
+		A20000000000000000000008 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
+		A20000000000000000000009 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000A /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000B /* BrowseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000C /* BusinessDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessDetailView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000D /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A2000000000000000000000F /* FirebaseBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseBootstrap.swift; sourceTree = "<group>"; };
+		A20000000000000000000010 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		A20000000000000000000011 /* FirestoreRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreRepository.swift; sourceTree = "<group>"; };
+		A20000000000000000000012 /* SeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedService.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A40000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000013 /* FirebaseAuth in Frameworks */,
+				A10000000000000000000014 /* FirebaseFirestore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A50000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A50000000000000000000002 /* HeyEcho */,
+				A50000000000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A50000000000000000000002 /* HeyEcho */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000001 /* HeyEchoApp.swift */,
+				A2000000000000000000000E /* Assets.xcassets */,
+				A50000000000000000000004 /* Models */,
+				A50000000000000000000005 /* Data */,
+				A50000000000000000000006 /* Theme */,
+				A50000000000000000000007 /* Components */,
+				A50000000000000000000008 /* Views */,
+			);
+			path = HeyEcho;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A30000000000000000000001 /* HeyEcho.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000004 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000004 /* Models.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000005 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000005 /* StaticData.swift */,
+				A20000000000000000000006 /* AppState.swift */,
+				A5000000000000000000000F /* Firebase */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		A5000000000000000000000F /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000F /* FirebaseBootstrap.swift */,
+				A20000000000000000000010 /* AuthService.swift */,
+				A20000000000000000000011 /* FirestoreRepository.swift */,
+				A20000000000000000000012 /* SeedService.swift */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000006 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000003 /* AppTheme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000007 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000007 /* SharedComponents.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000008 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000002 /* RootView.swift */,
+				A50000000000000000000009 /* Onboarding */,
+				A5000000000000000000000A /* Home */,
+				A5000000000000000000000B /* Search */,
+				A5000000000000000000000C /* Browse */,
+				A5000000000000000000000D /* Business */,
+				A5000000000000000000000E /* Profile */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000009 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000008 /* OnboardingFlowView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		A5000000000000000000000A /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000009 /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		A5000000000000000000000B /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000A /* SearchView.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		A5000000000000000000000C /* Browse */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000B /* BrowseView.swift */,
+			);
+			path = Browse;
+			sourceTree = "<group>";
+		};
+		A5000000000000000000000D /* Business */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000C /* BusinessDetailView.swift */,
+			);
+			path = Business;
+			sourceTree = "<group>";
+		};
+		A5000000000000000000000E /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000D /* ProfileView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A60000000000000000000001 /* HeyEcho */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A80000000000000000000003 /* Build configuration list for PBXNativeTarget "HeyEcho" */;
+			buildPhases = (
+				A70000000000000000000001 /* Sources */,
+				A40000000000000000000001 /* Frameworks */,
+				A70000000000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HeyEcho;
+			packageProductDependencies = (
+				B10000000000000000000001 /* FirebaseAuth */,
+				B10000000000000000000002 /* FirebaseFirestore */,
+			);
+			productName = HeyEcho;
+			productReference = A30000000000000000000001 /* HeyEcho.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A90000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					A60000000000000000000001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = A80000000000000000000001 /* Build configuration list for PBXProject "HeyEcho" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A50000000000000000000001;
+			packageReferences = (
+				B20000000000000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
+			productRefGroup = A50000000000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A60000000000000000000001 /* HeyEcho */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A70000000000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000000000000000000000E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A70000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000001 /* HeyEchoApp.swift in Sources */,
+				A10000000000000000000002 /* RootView.swift in Sources */,
+				A10000000000000000000003 /* AppTheme.swift in Sources */,
+				A10000000000000000000004 /* Models.swift in Sources */,
+				A10000000000000000000005 /* StaticData.swift in Sources */,
+				A10000000000000000000006 /* AppState.swift in Sources */,
+				A10000000000000000000007 /* SharedComponents.swift in Sources */,
+				A10000000000000000000008 /* OnboardingFlowView.swift in Sources */,
+				A10000000000000000000009 /* HomeView.swift in Sources */,
+				A1000000000000000000000A /* SearchView.swift in Sources */,
+				A1000000000000000000000B /* BrowseView.swift in Sources */,
+				A1000000000000000000000C /* BusinessDetailView.swift in Sources */,
+				A1000000000000000000000D /* ProfileView.swift in Sources */,
+				A1000000000000000000000F /* FirebaseBootstrap.swift in Sources */,
+				A10000000000000000000010 /* AuthService.swift in Sources */,
+				A10000000000000000000011 /* FirestoreRepository.swift in Sources */,
+				A10000000000000000000012 /* SeedService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A80000000000000000000002 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A80000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A80000000000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = HeyEcho;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.heyecho.india.phase1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A80000000000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = HeyEcho;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.heyecho.india.phase1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A80000000000000000000001 /* Build configuration list for PBXProject "HeyEcho" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A80000000000000000000002 /* Debug */,
+				A80000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A80000000000000000000003 /* Build configuration list for PBXNativeTarget "HeyEcho" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A80000000000000000000005 /* Debug */,
+				A80000000000000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B20000000000000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B10000000000000000000001 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B20000000000000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		B10000000000000000000002 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B20000000000000000000001 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A90000000000000000000001 /* Project object */;
+}
