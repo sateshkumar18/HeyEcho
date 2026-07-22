@@ -1,7 +1,9 @@
 import SwiftUI
+import FirebaseAuth
 
 @main
 struct HeyEchoApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var appState: AppState
 
     init() {
@@ -15,6 +17,10 @@ struct HeyEchoApp: App {
                 .environmentObject(appState)
                 .task {
                     await appState.bootstrap()
+                }
+                .onOpenURL { url in
+                    // reCAPTCHA / Phone Auth redirect callback
+                    _ = Auth.auth().canHandle(url)
                 }
         }
     }

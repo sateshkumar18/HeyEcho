@@ -31,6 +31,7 @@
 		A10000000000000000000016 /* TrustEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000016 /* TrustEngine.swift */; };
 		A10000000000000000000017 /* ContactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000017 /* ContactsService.swift */; };
 		A10000000000000000000018 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000018 /* GoogleService-Info.plist */; };
+		A10000000000000000000019 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000019 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -312,6 +313,7 @@
 				A10000000000000000000015 /* PhoneNormalizer.swift in Sources */,
 				A10000000000000000000016 /* TrustEngine.swift in Sources */,
 				A10000000000000000000017 /* ContactsService.swift in Sources */,
+				A10000000000000000000019 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

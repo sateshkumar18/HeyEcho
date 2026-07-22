@@ -204,7 +204,7 @@ private struct ProfileSetupStep: View {
                 }
 
                 if appState.isCloudEnabled {
-                    Text("Testing tip: add +91XXXXXXXXXX in Firebase → Authentication → Phone numbers for testing, then enter that fixed code here. No SMS is sent for test numbers.")
+                    Text("1) Add +919390217816 in Firebase → Phone numbers for testing with code 123456.\n2) Tap Send OTP below.\n3) OTP field appears — type 123456 (no SMS).")
                         .font(.caption)
                         .foregroundStyle(AppTheme.muted)
                         .fixedSize(horizontal: false, vertical: true)
@@ -213,21 +213,18 @@ private struct ProfileSetupStep: View {
                 field("Your name", text: $appState.profile.name, icon: "person")
                 field("Phone number", text: $appState.profile.phone, icon: "phone")
                     .keyboardType(.phonePad)
+                    .disabled(isWorking)
 
                 if otpSent {
                     field("OTP code", text: $otp, icon: "lock.shield")
                         .keyboardType(.numberPad)
                     Text(appState.isCloudEnabled
-                         ? "Test number: enter the fixed code from Firebase Console (e.g. 123456). No SMS expected."
+                         ? "Enter the fixed test code from Firebase (e.g. 123456). No SMS expected."
                          : "Local mode test OTP: 123456")
                         .font(.caption)
                         .foregroundStyle(AppTheme.muted)
                     Button("Resend OTP") {
-                        Task {
-                            isWorking = true
-                            await appState.sendOTP()
-                            isWorking = false
-                        }
+                        Task { await sendOTP() }
                     }
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(AppTheme.brand)
@@ -245,23 +242,17 @@ private struct ProfileSetupStep: View {
 
                 if !otpSent {
                     Button {
-                        Task {
-                            isWorking = true
-                            await appState.sendOTP()
-                            isWorking = false
-                            if appState.authError == nil || !appState.isCloudEnabled {
-                                withAnimation { otpSent = true }
-                                if !appState.isCloudEnabled { appState.authError = nil }
-                            }
-                        }
+                        Task { await sendOTP() }
                     } label: {
-                        if isWorking {
-                            ProgressView()
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
-                        } else {
-                            Text("Send OTP")
+                        HStack(spacing: 10) {
+                            if isWorking {
+                                ProgressView()
+                                    .tint(.white)
+                            }
+                            Text(isWorking ? "Sending OTP…" : "Send OTP")
                         }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 4)
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .disabled(
@@ -278,19 +269,32 @@ private struct ProfileSetupStep: View {
                             if ok { onContinue() }
                         }
                     } label: {
-                        if isWorking {
-                            ProgressView()
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
-                        } else {
-                            Text("Verify & continue")
+                        HStack(spacing: 10) {
+                            if isWorking {
+                                ProgressView()
+                                    .tint(.white)
+                            }
+                            Text(isWorking ? "Verifying…" : "Verify & continue")
                         }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 4)
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .disabled(isWorking || otp.count < 6)
                 }
             }
             .padding(24)
+        }
+    }
+
+    private func sendOTP() async {
+        isWorking = true
+        appState.authError = nil
+        await appState.sendOTP()
+        isWorking = false
+        // Only reveal OTP field after Firebase accepts the send (or local mode).
+        if appState.authError == nil {
+            withAnimation { otpSent = true }
         }
     }
 

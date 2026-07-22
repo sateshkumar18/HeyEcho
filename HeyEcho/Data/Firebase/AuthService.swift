@@ -64,10 +64,18 @@ final class AuthService: ObservableObject {
         guard FirebaseBootstrap.isConfigured else { throw AuthError.firebaseNotConfigured }
         guard let e164 = Self.e164IndianPhone(from: rawPhone) else { throw AuthError.invalidPhone }
 
+        // Test numbers return quickly; real numbers may open reCAPTCHA on Simulator.
         let id: String = try await withCheckedThrowingContinuation { continuation in
             PhoneAuthProvider.provider().verifyPhoneNumber(e164, uiDelegate: nil) { verificationID, error in
                 if let error {
-                    continuation.resume(throwing: AuthError.underlying(error.localizedDescription))
+                    let ns = error as NSError
+                    var message = error.localizedDescription
+                    if ns.code == 17020 || message.lowercased().contains("network") {
+                        message = "Network error sending OTP. Check internet and try again."
+                    } else if message.lowercased().contains("captcha") || message.lowercased().contains("app verification") {
+                        message = "App verification failed. Use a Firebase test phone number (+91… with fixed code), or complete the reCAPTCHA prompt."
+                    }
+                    continuation.resume(throwing: AuthError.underlying(message))
                     return
                 }
                 guard let verificationID else {

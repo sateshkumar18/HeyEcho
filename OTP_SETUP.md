@@ -30,14 +30,15 @@ No SMS is sent. You type a fixed code from Firebase Console. Works on Simulator 
 5. Enter code: `123456`  
 6. Continue onboarding  
 
-### If Send OTP fails
+### If Send OTP hangs / OTP field never appears
 
-| Error | Fix |
-|-------|-----|
-| Phone provider disabled | Enable Phone under Sign-in method |
-| Invalid number | Use same digits as the test entry |
-| reCAPTCHA / URL scheme | Already in `Info.plist` (`app-1-734055506868-…`) — rebuild after pull |
-| Still Local mode | Confirm `GoogleService-Info.plist` is in the app target |
+1. Confirm the number is listed under **Phone numbers for testing** exactly as `+919390217816`
+2. Pull latest code (includes `AppDelegate` for Phone Auth / reCAPTCHA callbacks)
+3. Rebuild the app, tap **Send OTP** again — button should show **Sending OTP…**
+4. When send succeeds, the **OTP code** field appears
+5. If an error shows in red under the form, fix that message (test number / network / reCAPTCHA)
+
+On Simulator, Firebase may briefly open a reCAPTCHA browser for non-test numbers. Test numbers should skip SMS and return quickly.
 
 ---
 
