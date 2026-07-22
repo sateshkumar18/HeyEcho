@@ -44,19 +44,22 @@ Do these steps **in order**. Console work can be done on any computer; running t
 
 ---
 
-## Step 3 — Enable Phone Authentication
+## Step 3 — Enable Phone Authentication (OTP)
+
+Full guide: [`OTP_SETUP.md`](OTP_SETUP.md)
 
 1. Firebase Console → **Build** → **Authentication**.
 2. Click **Get started** (if first time).
 3. **Sign-in method** tab → **Phone** → **Enable** → **Save**.
-4. Still under Authentication → **Sign-in method** → scroll to **Phone numbers for testing**:
-   - Phone: `+91 98765 43210` (or your test number)  
-   - Code: `123456`  
-   - Add  
+4. **Phone numbers for testing** → Add:
 
-Use that number + `123456` in the app on Simulator (no real SMS).
+   | Phone | Code |
+   |-------|------|
+   | `+919390217816` | `123456` |
 
-> Real SMS to real phones usually needs the **Blaze** (pay-as-you-go) plan. Test numbers work on the free Spark plan.
+5. In the app: use that number → enter `123456`. **No SMS** — that is expected for test numbers.
+
+> Real SMS later needs **Blaze** + a physical iPhone + APNs. Test numbers work on free Spark.
 
 ---
 

@@ -190,7 +190,7 @@ private struct ProfileSetupStep: View {
                 SectionHeader(
                     title: "Create your profile",
                     subtitle: appState.isCloudEnabled
-                        ? "Sign in with your phone. OTP is verified by Firebase Auth."
+                        ? "Use a Firebase test phone number for OTP (see OTP_SETUP.md). Real SMS needs Blaze later."
                         : "Local mode — add Firebase to go live (see FIREBASE_SETUP.md)."
                 )
 
@@ -203,6 +203,13 @@ private struct ProfileSetupStep: View {
                         .foregroundStyle(AppTheme.muted)
                 }
 
+                if appState.isCloudEnabled {
+                    Text("Testing tip: add +91XXXXXXXXXX in Firebase → Authentication → Phone numbers for testing, then enter that fixed code here. No SMS is sent for test numbers.")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
                 field("Your name", text: $appState.profile.name, icon: "person")
                 field("Phone number", text: $appState.profile.phone, icon: "phone")
                     .keyboardType(.phonePad)
@@ -211,7 +218,7 @@ private struct ProfileSetupStep: View {
                     field("OTP code", text: $otp, icon: "lock.shield")
                         .keyboardType(.numberPad)
                     Text(appState.isCloudEnabled
-                         ? "Enter the SMS code (or your Firebase test-number code)."
+                         ? "Test number: enter the fixed code from Firebase Console (e.g. 123456). No SMS expected."
                          : "Local mode test OTP: 123456")
                         .font(.caption)
                         .foregroundStyle(AppTheme.muted)
