@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct OnboardingFlowView: View {
     @EnvironmentObject private var appState: AppState
@@ -147,7 +148,7 @@ private struct LandingStep: View {
                         .opacity(appeared ? 1 : 0)
                         .offset(y: appeared ? 0 : 24)
 
-                    Text("Indiranagar pilot · Phase 1")
+                    Text("Trusted local food · Phase 1")
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.55))
                 }
@@ -214,6 +215,16 @@ private struct ProfileSetupStep: View {
                          : "Local mode test OTP: 123456")
                         .font(.caption)
                         .foregroundStyle(AppTheme.muted)
+                    Button("Resend OTP") {
+                        Task {
+                            isWorking = true
+                            await appState.sendOTP()
+                            isWorking = false
+                        }
+                    }
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.brand)
+                    .disabled(isWorking)
                 }
 
                 if let authError = appState.authError {
@@ -300,14 +311,14 @@ private struct CityPickerStep: View {
         VStack(alignment: .leading, spacing: 16) {
             SectionHeader(
                 title: "Choose your food city",
-                subtitle: "Start with the neighborhood where you eat most often."
+                subtitle: "Wherever you eat most — listings for that area appear as they’re added."
             )
             .padding(.horizontal, 24)
             .padding(.top, 12)
 
             ScrollView {
                 VStack(spacing: 10) {
-                    ForEach(StaticData.foodCities, id: \.self) { city in
+                    ForEach(appState.availableFoodCities, id: \.self) { city in
                         let selected = appState.profile.foodCity == city
                         Button {
                             withAnimation(.easeInOut(duration: 0.2)) {
@@ -359,22 +370,29 @@ private struct ContactsGotoStep: View {
         VStack(alignment: .leading, spacing: 12) {
             SectionHeader(
                 title: "Pick up to 5 GoTo's",
-                subtitle: "These voices power your trust-ranked recommendations."
+                subtitle: "We match your phone contacts to people already on HeyEcho."
             )
             .padding(.horizontal, 24)
             .padding(.top, 12)
+
+            contactsBanner
+                .padding(.horizontal, 24)
 
             HStack {
                 Text("\(appState.selectedGotoIds.count)/5 selected")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(AppTheme.brand)
                 Spacer()
+                if appState.isLoadingContacts {
+                    ProgressView()
+                        .scaleEffect(0.85)
+                }
             }
             .padding(.horizontal, 24)
 
             ScrollView {
                 VStack(spacing: 10) {
-                    ForEach(appState.contacts.filter(\.isOnHeyEcho)) { contact in
+                    ForEach(appState.selectableGotos) { contact in
                         let selected = appState.selectedGotoIds.contains(contact.id)
                         Button {
                             appState.toggleGoto(contact.id)
@@ -405,22 +423,24 @@ private struct ContactsGotoStep: View {
                         .buttonStyle(.plain)
                     }
 
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Not on HeyEcho yet")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(AppTheme.muted)
-                            .padding(.top, 8)
-                        ForEach(appState.contacts.filter { !$0.isOnHeyEcho }) { contact in
-                            HStack(spacing: 12) {
-                                AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 36)
-                                Text(contact.name)
-                                    .foregroundStyle(AppTheme.ink.opacity(0.7))
-                                Spacer()
-                                Text("Invite later")
-                                    .font(.caption)
-                                    .foregroundStyle(AppTheme.muted)
+                    if !appState.inviteLaterContacts.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("In your contacts — not on HeyEcho yet")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(AppTheme.muted)
+                                .padding(.top, 8)
+                            ForEach(appState.inviteLaterContacts.prefix(20)) { contact in
+                                HStack(spacing: 12) {
+                                    AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 36)
+                                    Text(contact.name)
+                                        .foregroundStyle(AppTheme.ink.opacity(0.7))
+                                    Spacer()
+                                    Text("Invite later")
+                                        .font(.caption)
+                                        .foregroundStyle(AppTheme.muted)
+                                }
+                                .padding(.vertical, 6)
                             }
-                            .padding(.vertical, 6)
                         }
                     }
                 }
@@ -432,6 +452,36 @@ private struct ContactsGotoStep: View {
                 .buttonStyle(PrimaryButtonStyle())
                 .disabled(appState.selectedGotoIds.isEmpty)
                 .padding(24)
+        }
+        .task {
+            await appState.requestAndLoadContacts()
+        }
+    }
+
+    @ViewBuilder
+    private var contactsBanner: some View {
+        switch appState.contactsStatus {
+        case .authorized:
+            Text("Matched against your phone contacts. Pilot directory people also appear so you can still pick GoTo's.")
+                .font(.caption)
+                .foregroundStyle(AppTheme.muted)
+        case .denied, .restricted:
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Contacts access is off — showing the pilot directory. Enable Contacts in Settings for real matching.")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.accent)
+                Button("Open Settings") {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                }
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(AppTheme.brand)
+            }
+        case .notDetermined, .unavailable:
+            Text("Allow Contacts so we can match friends already on HeyEcho.")
+                .font(.caption)
+                .foregroundStyle(AppTheme.muted)
         }
     }
 }

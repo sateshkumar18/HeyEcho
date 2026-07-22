@@ -3,6 +3,8 @@ import SwiftUI
 struct ProfileView: View {
     @EnvironmentObject private var appState: AppState
     @State private var showNewCollection = false
+    @State private var showEditGotos = false
+    @State private var showEditKnownFor = false
     @State private var collectionTitle = ""
     @State private var collectionNote = ""
 
@@ -12,6 +14,13 @@ struct ProfileView: View {
                 VStack(alignment: .leading, spacing: 28) {
                     profileHeader
 
+                    if let authError = appState.authError {
+                        Text(authError)
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.accent)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
                     sectionBlock(title: "You're a GoTo for") {
                         if appState.profile.knownFor.isEmpty {
                             Text("No tags yet")
@@ -19,6 +28,10 @@ struct ProfileView: View {
                         } else {
                             FlowTags(tags: appState.profile.knownFor)
                         }
+                        Button("Edit tags") { showEditKnownFor = true }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.brand)
+                            .padding(.top, 4)
                     }
 
                     sectionBlock(title: "Trusted sources") {
@@ -42,6 +55,10 @@ struct ProfileView: View {
                                 }
                             }
                         }
+                        Button("Edit GoTo's") { showEditGotos = true }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.brand)
+                            .padding(.top, 4)
                     }
 
                     sectionBlock(title: "Favorites") {
@@ -104,6 +121,13 @@ struct ProfileView: View {
                                 .overlay(alignment: .bottom) {
                                     Rectangle().fill(AppTheme.line).frame(height: 1)
                                 }
+                                .contextMenu {
+                                    Button(role: .destructive) {
+                                        appState.deleteCollection(id: collection.id)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
                             }
 
                             Button {
@@ -118,12 +142,14 @@ struct ProfileView: View {
                         }
                     }
 
-                    Button("Replay onboarding") {
+                    #if DEBUG
+                    Button("Replay onboarding (Debug)") {
                         appState.resetOnboardingForDemo()
                     }
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(AppTheme.accent)
                     .padding(.top, 4)
+                    #endif
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Backend")
@@ -135,6 +161,10 @@ struct ProfileView: View {
                             Text(appState.backendLabel)
                                 .font(.subheadline)
                                 .foregroundStyle(AppTheme.muted)
+                            if appState.isSaving {
+                                ProgressView()
+                                    .scaleEffect(0.7)
+                            }
                         }
                         if appState.isCloudEnabled {
                             Button("Sign out") {
@@ -177,6 +207,14 @@ struct ProfileView: View {
                     }
                 }
                 .presentationDetents([.medium])
+            }
+            .sheet(isPresented: $showEditGotos) {
+                EditGotosSheet()
+                    .environmentObject(appState)
+            }
+            .sheet(isPresented: $showEditKnownFor) {
+                EditKnownForSheet()
+                    .environmentObject(appState)
             }
         }
     }
@@ -224,6 +262,93 @@ struct ProfileView: View {
     }
 }
 
+private struct EditGotosSheet: View {
+    @EnvironmentObject private var appState: AppState
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section("On HeyEcho · max 5") {
+                    ForEach(appState.selectableGotos) { contact in
+                        let selected = appState.selectedGotoIds.contains(contact.id)
+                        Button {
+                            appState.toggleGoto(contact.id)
+                        } label: {
+                            HStack {
+                                AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 36)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(contact.name)
+                                        .foregroundStyle(AppTheme.ink)
+                                    Text(contact.knownFor.prefix(2).joined(separator: " · "))
+                                        .font(.caption)
+                                        .foregroundStyle(AppTheme.muted)
+                                }
+                                Spacer()
+                                Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                                    .foregroundStyle(selected ? AppTheme.brand : AppTheme.muted)
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Edit GoTo's")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
+    }
+}
+
+private struct EditKnownForSheet: View {
+    @EnvironmentObject private var appState: AppState
+    @Environment(\.dismiss) private var dismiss
+    @State private var tags: [String] = []
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                    ForEach(StaticData.foodTaxonomy, id: \.self) { tag in
+                        let selected = tags.contains(tag)
+                        Button {
+                            if selected {
+                                tags.removeAll { $0 == tag }
+                            } else {
+                                tags.append(tag)
+                            }
+                        } label: {
+                            Text(tag)
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(selected ? .white : AppTheme.ink)
+                                .frame(maxWidth: .infinity, minHeight: 48)
+                                .background(selected ? AppTheme.brand : AppTheme.card)
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(20)
+            }
+            .navigationTitle("What you're known for")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        appState.updateKnownFor(tags)
+                        dismiss()
+                    }
+                }
+            }
+            .onAppear { tags = appState.profile.knownFor }
+        }
+    }
+}
+
 private struct FlowTags: View {
     let tags: [String]
 
@@ -254,7 +379,6 @@ private struct FlexibleTagWrap: View {
         }
     }
 
-    // Rough wrap into rows of ~2–3 tags for readability
     private var rows: [[String]] {
         stride(from: 0, to: tags.count, by: 2).map { start in
             Array(tags[start..<min(start + 2, tags.count)])
@@ -265,6 +389,9 @@ private struct FlexibleTagWrap: View {
 struct CollectionDetailView: View {
     @EnvironmentObject private var appState: AppState
     let collectionId: String
+    @State private var showEdit = false
+    @State private var editTitle = ""
+    @State private var editNote = ""
 
     private var collection: FoodCollection? {
         appState.collections.first { $0.id == collectionId }
@@ -287,22 +414,25 @@ struct CollectionDetailView: View {
                     } else {
                         ForEach(collection.businessIds, id: \.self) { id in
                             if let business = appState.business(id: id) {
-                                NavigationLink {
-                                    BusinessDetailView(businessId: id)
-                                } label: {
-                                    HStack {
+                                HStack {
+                                    NavigationLink {
+                                        BusinessDetailView(businessId: id)
+                                    } label: {
                                         Text(business.name)
                                             .font(.subheadline.weight(.semibold))
                                             .foregroundStyle(AppTheme.ink)
-                                        Spacer()
-                                        Image(systemName: "chevron.right")
-                                            .font(.caption.weight(.semibold))
-                                            .foregroundStyle(AppTheme.muted)
                                     }
-                                    .padding(.vertical, 14)
-                                    .overlay(alignment: .bottom) {
-                                        Rectangle().fill(AppTheme.line).frame(height: 1)
+                                    Spacer()
+                                    Button(role: .destructive) {
+                                        appState.removeBusiness(id, fromCollectionId: collectionId)
+                                    } label: {
+                                        Image(systemName: "minus.circle")
+                                            .foregroundStyle(AppTheme.accent)
                                     }
+                                }
+                                .padding(.vertical, 14)
+                                .overlay(alignment: .bottom) {
+                                    Rectangle().fill(AppTheme.line).frame(height: 1)
                                 }
                             }
                         }
@@ -314,5 +444,43 @@ struct CollectionDetailView: View {
         .background(AppTheme.atmosphere)
         .navigationTitle(collection?.title ?? "Collection")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button("Edit") {
+                        editTitle = collection?.title ?? ""
+                        editNote = collection?.note ?? ""
+                        showEdit = true
+                    }
+                    Button("Delete", role: .destructive) {
+                        appState.deleteCollection(id: collectionId)
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }
+            }
+        }
+        .sheet(isPresented: $showEdit) {
+            NavigationStack {
+                Form {
+                    TextField("Title", text: $editTitle)
+                    TextField("Note", text: $editNote, axis: .vertical)
+                }
+                .navigationTitle("Edit collection")
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { showEdit = false }
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Save") {
+                            appState.renameCollection(id: collectionId, title: editTitle, note: editNote)
+                            showEdit = false
+                        }
+                        .disabled(editTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    }
+                }
+            }
+            .presentationDetents([.medium])
+        }
     }
 }

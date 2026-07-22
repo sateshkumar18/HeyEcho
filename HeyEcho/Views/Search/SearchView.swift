@@ -24,11 +24,18 @@ struct SearchView: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         if !query.isEmpty {
-                            Text(results.isEmpty ? "No matches" : "Trust-ranked results")
+                            Text(results.isEmpty ? "No matches in \(appState.profile.foodCity)" : "Trust-ranked results")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(AppTheme.muted)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.bottom, 8)
+
+                            if results.isEmpty {
+                                Text("Try another dish, category, or browse by category. Ask your GoTo's once Phase 2 messaging ships.")
+                                    .font(.subheadline)
+                                    .foregroundStyle(AppTheme.muted)
+                                    .padding(.bottom, 12)
+                            }
                         }
                         ForEach(results) { result in
                             NavigationLink {

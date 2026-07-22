@@ -84,6 +84,14 @@ struct CategoryResultsView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, 8)
 
+                if results.isEmpty {
+                    Text("No \(categoryName) places in \(appState.profile.foodCity) yet.")
+                        .font(.subheadline)
+                        .foregroundStyle(AppTheme.muted)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 12)
+                }
+
                 ForEach(results) { result in
                     NavigationLink {
                         BusinessDetailView(businessId: result.business.id)

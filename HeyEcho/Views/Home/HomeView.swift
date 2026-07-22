@@ -5,7 +5,7 @@ struct HomeView: View {
     @State private var appeared = false
 
     private var recommendations: [TrustRankedResult] {
-        appState.search(query: "").filter { $0.trustScore > 0 }
+        appState.search(query: "").filter { !$0.trustedRecommenders.isEmpty }
     }
 
     var body: some View {

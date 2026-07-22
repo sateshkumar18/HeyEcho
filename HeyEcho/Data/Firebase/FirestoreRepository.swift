@@ -88,6 +88,18 @@ final class FirestoreRepository {
         return all.documents.count
     }
 
+    // MARK: - Remote config (dynamic cities + trust weights)
+
+    /// Reads `config/app`. Missing doc → fallback defaults (still fully usable).
+    func fetchAppConfig() async throws -> AppRemoteConfig {
+        let db = try requireDB()
+        let snap = try await db.collection("config").document("app").getDocument()
+        guard snap.exists, let data = snap.data() else {
+            return .fallback
+        }
+        return AppRemoteConfig.fromFirestore(data)
+    }
+
     // MARK: - Collections (per user)
 
     func fetchCollections(ownerId: String) async throws -> [FoodCollection] {
@@ -126,7 +138,7 @@ extension UserProfile {
             id: id,
             name: data["name"] as? String ?? "",
             phone: data["phone"] as? String ?? "",
-            foodCity: data["foodCity"] as? String ?? StaticData.pilotCity,
+            foodCity: data["foodCity"] as? String ?? StaticData.defaultFoodCity,
             knownFor: data["knownFor"] as? [String] ?? [],
             gotoIds: data["gotoIds"] as? [String] ?? [],
             favoriteBusinessIds: data["favoriteBusinessIds"] as? [String] ?? [],
@@ -213,6 +225,19 @@ extension FoodCollection {
             ownerName: data["ownerName"] as? String ?? "",
             businessIds: data["businessIds"] as? [String] ?? [],
             note: data["note"] as? String ?? ""
+        )
+    }
+}
+
+extension AppRemoteConfig {
+    static func fromFirestore(_ data: [String: Any]) -> AppRemoteConfig {
+        let fallback = AppRemoteConfig.fallback
+        let cities = data["foodCities"] as? [String]
+        return AppRemoteConfig(
+            foodCities: (cities?.isEmpty == false) ? cities! : fallback.foodCities,
+            gotoWeight: data["gotoWeight"] as? Int ?? fallback.gotoWeight,
+            cityBoost: data["cityBoost"] as? Int ?? fallback.cityBoost,
+            defaultFoodCity: data["defaultFoodCity"] as? String ?? fallback.defaultFoodCity
         )
     }
 }

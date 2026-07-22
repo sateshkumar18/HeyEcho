@@ -26,11 +26,26 @@ Trust-based local food discovery iOS app. Phase 1 supports **local mode** and **
 ## Phase 1 features
 
 - Phone/OTP onboarding (Firebase Auth when cloud)
-- Food city + up to 5 Personal GoTo’s
-- Trust-ranked Home / Search / Browse
+- Food city + up to 5 Personal GoTo’s (matched from **device contacts**)
+- Trust-ranked Home / Search / Browse (GoTo weight + city boost)
 - Static → seeded cloud business profiles
-- Favorites + Collections synced to Firestore
-- Profile shows current backend mode
+- Favorites + Collections (create / edit / delete) synced to Firestore
+- Profile: edit GoTo’s and known-for tags; shows current backend mode
+
+**Production checklist:** [`PHASE1_PRODUCTION.md`](PHASE1_PRODUCTION.md)  
+**Go live:** follow [`FIREBASE_SETUP.md`](FIREBASE_SETUP.md).
+
+## Trust ranking (Phase 1) — dynamic
+
+Weights load from Firestore `config/app` (`gotoWeight`, `cityBoost`). Defaults if missing:
+
+| Signal | Default weight |
+|--------|----------------|
+| Personal GoTo recommends the place | +3 each |
+| Business matches selected food city | +1 |
+| Tie-break | Name A→Z |
+
+Food cities and business listings are also dynamic (remote config + Firestore directory). Results prefer the user’s selected city when matches exist.
 
 ## Project layout
 

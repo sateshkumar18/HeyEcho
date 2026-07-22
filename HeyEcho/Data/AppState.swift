@@ -14,8 +14,11 @@ final class AppState: ObservableObject {
 
     @Published var isBootstrapping = false
     @Published var isSaving = false
+    @Published var isLoadingContacts = false
     @Published var authError: String?
+    @Published var contactsStatus: ContactsAccessStatus = .notDetermined
     @Published var backendLabel: String = BackendMode.local.rawValue
+    @Published var remoteConfig: AppRemoteConfig = .fallback
 
     let auth = AuthService()
     private let repo = FirestoreRepository()
@@ -26,6 +29,9 @@ final class AppState: ObservableObject {
     private let favoritesKey = "heyecho.favorites"
     private let gotosKey = "heyecho.gotos"
     private let collectionsKey = "heyecho.collections"
+
+    /// Directory of known HeyEcho users (seed or Firestore) before device-merge.
+    private var directoryContacts: [ContactPerson] = StaticData.contacts
 
     init() {
         let defaults = UserDefaults.standard
@@ -38,14 +44,20 @@ final class AppState: ObservableObject {
         contacts = StaticData.contacts
         businesses = StaticData.businesses
         backendLabel = FirebaseBootstrap.mode.rawValue
+        contactsStatus = ContactsService.accessStatus()
     }
 
     /// Call after FirebaseBootstrap.configureIfPossible().
     func bootstrap() async {
         backendLabel = FirebaseBootstrap.mode.rawValue
         auth.refreshFromFirebase()
+        contactsStatus = ContactsService.accessStatus()
 
-        guard FirebaseBootstrap.isConfigured else { return }
+        guard FirebaseBootstrap.isConfigured else {
+            remoteConfig = .fallback
+            await refreshContactsFromDevice(fallbackToDirectory: true)
+            return
+        }
 
         isBootstrapping = true
         defer { isBootstrapping = false }
@@ -55,9 +67,32 @@ final class AppState: ObservableObject {
             businesses = StaticData.businesses
 
             if let uid = auth.userId {
-                try await SeedService.seedPilotDataIfNeeded(using: repo)
-                contacts = try await repo.fetchContacts()
+                do {
+                    remoteConfig = try await repo.fetchAppConfig()
+                } catch {
+                    remoteConfig = .fallback
+                }
+                if profile.foodCity.isEmpty {
+                    profile.foodCity = remoteConfig.defaultFoodCity
+                }
+
+                do {
+                    try await SeedService.seedPilotDataIfNeeded(using: repo)
+                } catch {
+                    // Production rules deny client directory writes — seed via Console instead.
+                    #if DEBUG
+                    authError = "Directory seed skipped: \(error.localizedDescription). Import businesses/contacts in Firebase Console if empty."
+                    #endif
+                }
+                directoryContacts = try await repo.fetchContacts()
                 businesses = try await repo.fetchBusinesses()
+                if directoryContacts.isEmpty {
+                    directoryContacts = StaticData.contacts
+                }
+                if businesses.isEmpty {
+                    businesses = StaticData.businesses
+                }
+                await refreshContactsFromDevice(fallbackToDirectory: true)
 
                 if let remote = try await repo.fetchUser(uid: uid) {
                     profile = remote.profile
@@ -68,6 +103,7 @@ final class AppState: ObservableObject {
                     if collections.isEmpty {
                         collections = StaticData.sampleCollections
                     }
+                    syncCollectionIds()
                 } else {
                     profile.id = uid
                     if let phone = auth.phoneNumber {
@@ -91,25 +127,49 @@ final class AppState: ObservableObject {
 
     var isCloudEnabled: Bool { FirebaseBootstrap.isConfigured }
 
+    var selectableGotos: [ContactPerson] {
+        contacts.filter(\.isOnHeyEcho)
+    }
+
+    var inviteLaterContacts: [ContactPerson] {
+        contacts.filter { !$0.isOnHeyEcho }
+    }
+
+    /// Cities from remote config ∪ whatever cities exist in the live business directory.
+    var availableFoodCities: [String] {
+        TrustEngine.availableCities(config: remoteConfig, businesses: businesses)
+    }
+
     func completeOnboarding() {
         profile.gotoIds = Array(selectedGotoIds)
         profile.favoriteBusinessIds = Array(favoriteBusinessIds)
+        syncCollectionIds()
         hasCompletedOnboarding = true
         Task { await persist() }
     }
 
     func resetOnboardingForDemo() {
+        #if DEBUG
         hasCompletedOnboarding = false
         Task { await persist() }
+        #endif
     }
 
     func toggleGoto(_ id: String) {
+        guard contacts.contains(where: { $0.id == id && $0.isOnHeyEcho }) || selectedGotoIds.contains(id) else {
+            return
+        }
         if selectedGotoIds.contains(id) {
             selectedGotoIds.remove(id)
         } else if selectedGotoIds.count < 5 {
             selectedGotoIds.insert(id)
         }
         profile.gotoIds = Array(selectedGotoIds)
+        Task { await persist() }
+    }
+
+    func updateKnownFor(_ tags: [String]) {
+        profile.knownFor = tags
         Task { await persist() }
     }
 
@@ -136,6 +196,20 @@ final class AppState: ObservableObject {
             note: note
         )
         collections.insert(collection, at: 0)
+        syncCollectionIds()
+        Task { await persist() }
+    }
+
+    func renameCollection(id: String, title: String, note: String) {
+        guard let index = collections.firstIndex(where: { $0.id == id }) else { return }
+        collections[index].title = title
+        collections[index].note = note
+        Task { await persist() }
+    }
+
+    func deleteCollection(id: String) {
+        collections.removeAll { $0.id == id }
+        syncCollectionIds()
         Task { await persist() }
     }
 
@@ -147,34 +221,21 @@ final class AppState: ObservableObject {
         }
     }
 
-    func search(query: String) -> [TrustRankedResult] {
-        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        let pool: [Business]
-        if trimmed.isEmpty {
-            pool = businesses
-        } else {
-            pool = businesses.filter {
-                $0.name.lowercased().contains(trimmed)
-                    || $0.categories.joined(separator: " ").lowercased().contains(trimmed)
-                    || $0.neighborhood.lowercased().contains(trimmed)
-                    || $0.shortDescription.lowercased().contains(trimmed)
-            }
-        }
+    func removeBusiness(_ businessId: String, fromCollectionId collectionId: String) {
+        guard let index = collections.firstIndex(where: { $0.id == collectionId }) else { return }
+        collections[index].businessIds.removeAll { $0 == businessId }
+        Task { await persist() }
+    }
 
-        return pool.map { business in
-            let recommenders = contacts.filter {
-                selectedGotoIds.contains($0.id) && business.recommendedByContactIds.contains($0.id)
-            }
-            return TrustRankedResult(
-                business: business,
-                trustedRecommenders: recommenders,
-                trustScore: recommenders.count
-            )
-        }
-        .sorted {
-            if $0.trustScore != $1.trustScore { return $0.trustScore > $1.trustScore }
-            return $0.business.name < $1.business.name
-        }
+    func search(query: String) -> [TrustRankedResult] {
+        TrustEngine.rank(
+            businesses: businesses,
+            contacts: contacts,
+            selectedGotoIds: selectedGotoIds,
+            foodCity: profile.foodCity,
+            query: query,
+            config: remoteConfig
+        )
     }
 
     func browse(category: String) -> [TrustRankedResult] {
@@ -189,6 +250,48 @@ final class AppState: ObservableObject {
         businesses.first { $0.id == id }
     }
 
+    // MARK: - Contacts
+
+    func requestAndLoadContacts() async {
+        isLoadingContacts = true
+        defer { isLoadingContacts = false }
+
+        contactsStatus = ContactsService.accessStatus()
+        if contactsStatus == .notDetermined {
+            let granted = await ContactsService.requestAccess()
+            contactsStatus = granted ? .authorized : .denied
+        } else {
+            contactsStatus = ContactsService.accessStatus()
+        }
+
+        await refreshContactsFromDevice(fallbackToDirectory: true)
+    }
+
+    private func refreshContactsFromDevice(fallbackToDirectory: Bool) async {
+        contactsStatus = ContactsService.accessStatus()
+        guard contactsStatus == .authorized else {
+            if fallbackToDirectory {
+                contacts = directoryContacts
+            }
+            return
+        }
+
+        do {
+            let device = try ContactsService.fetchDeviceContacts()
+            contacts = ContactsService.merge(deviceContacts: device, directory: directoryContacts)
+            // Drop GoTo selections that are no longer selectable
+            selectedGotoIds = Set(selectedGotoIds.filter { id in
+                contacts.contains { $0.id == id && $0.isOnHeyEcho }
+            })
+            profile.gotoIds = Array(selectedGotoIds)
+        } catch {
+            authError = "Could not read contacts: \(error.localizedDescription)"
+            if fallbackToDirectory {
+                contacts = directoryContacts
+            }
+        }
+    }
+
     // MARK: - Auth helpers used by onboarding
 
     func sendOTP() async {
@@ -197,7 +300,6 @@ final class AppState: ObservableObject {
             if isCloudEnabled {
                 try await auth.sendOTP(to: profile.phone)
             }
-            // Local mode: OTP UI accepts demo code without network
         } catch {
             authError = error.localizedDescription
         }
@@ -212,9 +314,23 @@ final class AppState: ObservableObject {
                 if let phone = auth.phoneNumber {
                     profile.phone = phone
                 }
-                try await SeedService.seedPilotDataIfNeeded(using: repo)
-                contacts = try await repo.fetchContacts()
+                do {
+                    try await SeedService.seedPilotDataIfNeeded(using: repo)
+                } catch {
+                    #if DEBUG
+                    authError = "Directory seed skipped: \(error.localizedDescription)"
+                    #endif
+                }
+                do {
+                    remoteConfig = try await repo.fetchAppConfig()
+                } catch {
+                    remoteConfig = .fallback
+                }
+                directoryContacts = try await repo.fetchContacts()
                 businesses = try await repo.fetchBusinesses()
+                if directoryContacts.isEmpty { directoryContacts = StaticData.contacts }
+                if businesses.isEmpty { businesses = StaticData.businesses }
+                await refreshContactsFromDevice(fallbackToDirectory: true)
                 await persist()
                 return true
             } catch {
@@ -222,7 +338,6 @@ final class AppState: ObservableObject {
                 return false
             }
         } else {
-            // Local production-shaped demo: fixed test OTP
             guard code == "123456" else {
                 authError = "Invalid OTP. In local mode use 123456."
                 return false
@@ -243,19 +358,22 @@ final class AppState: ObservableObject {
             id: "me",
             name: "",
             phone: "",
-            foodCity: StaticData.pilotCity,
+            foodCity: StaticData.defaultFoodCity,
             knownFor: [],
             gotoIds: [],
             favoriteBusinessIds: [],
             collectionIds: []
         )
         collections = StaticData.sampleCollections
+        directoryContacts = StaticData.contacts
+        contacts = StaticData.contacts
         persistLocalCache()
     }
 
     // MARK: - Persistence
 
     func persist() async {
+        syncCollectionIds()
         persistLocalCache()
         guard isCloudEnabled, let uid = auth.userId ?? (profile.id != "me" ? profile.id : nil) else { return }
 
@@ -267,6 +385,7 @@ final class AppState: ObservableObject {
             toSave.id = uid
             toSave.gotoIds = Array(selectedGotoIds)
             toSave.favoriteBusinessIds = Array(favoriteBusinessIds)
+            toSave.collectionIds = collections.map(\.id)
             profile = toSave
             try await repo.saveUser(toSave, hasCompletedOnboarding: hasCompletedOnboarding)
             for collection in collections {
@@ -275,6 +394,10 @@ final class AppState: ObservableObject {
         } catch {
             authError = error.localizedDescription
         }
+    }
+
+    private func syncCollectionIds() {
+        profile.collectionIds = collections.map(\.id)
     }
 
     private func persistLocalCache() {
@@ -307,7 +430,7 @@ final class AppState: ObservableObject {
                 id: "me",
                 name: "",
                 phone: "",
-                foodCity: StaticData.pilotCity,
+                foodCity: StaticData.defaultFoodCity,
                 knownFor: [],
                 gotoIds: [],
                 favoriteBusinessIds: [],

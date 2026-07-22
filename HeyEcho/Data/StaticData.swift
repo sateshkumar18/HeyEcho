@@ -1,21 +1,18 @@
 import Foundation
 
-/// Static seed data for Phase 1. Swap this for API/database later.
+/// Local offline fallback only. Live data comes from Firestore when cloud is enabled —
+/// cities, trust weights, contacts, and businesses are all dynamic (not locked to one pilot).
 enum StaticData {
-    static let pilotCity = "Indiranagar, Bengaluru"
+    static var defaultFoodCity: String { AppRemoteConfig.fallback.defaultFoodCity }
 
-    static let foodCities = [
-        "Indiranagar, Bengaluru",
-        "Koramangala, Bengaluru",
-        "Bandra West, Mumbai",
-        "HSR Layout, Bengaluru",
-        "Jubilee Hills, Hyderabad"
-    ]
+    static var foodCities: [String] { AppRemoteConfig.fallback.foodCities }
 
+    /// Single taxonomy shared by Browse tiles and "known for" self-tagging (SOW Phase 1).
     static let foodTaxonomy = [
         "South Indian", "North Indian", "Biryani", "Street Food",
         "Cafe & Coffee", "Chinese", "Seafood", "Desserts",
-        "Healthy / Bowls", "Pizza & Pasta", "Chaat", "Filter Coffee"
+        "Healthy / Bowls", "Pizza & Pasta", "Chaat", "Filter Coffee",
+        "Cloud Kitchens", "Late-Night Food", "Cheap Eats", "Kebabs & Rolls"
     ]
 
     static let categories: [FoodCategory] = [
@@ -24,7 +21,11 @@ enum StaticData {
         .init(id: "c3", name: "Street Food", subtitle: "Chaat, rolls, late-night", symbol: "takeoutbag.and.cup.and.straw.fill"),
         .init(id: "c4", name: "Cafe & Coffee", subtitle: "Work-friendly spots", symbol: "cup.and.saucer.fill"),
         .init(id: "c5", name: "North Indian", subtitle: "Tandoor, thali, gravy", symbol: "fork.knife"),
-        .init(id: "c6", name: "Desserts", subtitle: "Ice cream, mithai, cakes", symbol: "birthday.cake.fill")
+        .init(id: "c6", name: "Desserts", subtitle: "Ice cream, mithai, cakes", symbol: "birthday.cake.fill"),
+        .init(id: "c7", name: "Cloud Kitchens", subtitle: "Delivery-first kitchens", symbol: "bicycle"),
+        .init(id: "c8", name: "Kebabs & Rolls", subtitle: "Shawarma, kebabs, wraps", symbol: "flame"),
+        .init(id: "c9", name: "Cheap Eats", subtitle: "Budget-friendly locals", symbol: "indianrupeesign.circle"),
+        .init(id: "c10", name: "Late-Night Food", subtitle: "Open after 10 PM", symbol: "moon.stars.fill")
     ]
 
     static let contacts: [ContactPerson] = [
@@ -180,6 +181,76 @@ enum StaticData {
             imageSymbol: "flame.fill",
             address: "Near ESI Hospital, Indiranagar",
             hours: "11:00 AM – 4:00 PM, 6:30 – 10:30 PM"
+        ),
+        .init(
+            id: "b11",
+            name: "Empire Restaurant",
+            neighborhood: "Indiranagar",
+            city: "Bengaluru",
+            categories: ["Late-Night Food", "Kebabs & Rolls", "Cheap Eats"],
+            shortDescription: "Late-night kebabs, rolls, and biryani for post-work hunger.",
+            priceLevel: 1,
+            perfectFor: ["Late night", "Groups"],
+            recommendedByContactIds: ["u4", "u10", "u2"],
+            imageSymbol: "moon.stars.fill",
+            address: "100 Feet Road, Indiranagar",
+            hours: "11:00 AM – 1:00 AM"
+        ),
+        .init(
+            id: "b12",
+            name: "Box8 Cloud Kitchen",
+            neighborhood: "Indiranagar",
+            city: "Bengaluru",
+            categories: ["Cloud Kitchens", "North Indian", "Biryani"],
+            shortDescription: "Delivery-first bowls and thalis with reliable Indiranagar coverage.",
+            priceLevel: 2,
+            perfectFor: ["Wfh lunch", "Office orders"],
+            recommendedByContactIds: ["u3", "u9"],
+            imageSymbol: "bicycle",
+            address: "Delivery only · Indiranagar",
+            hours: "10:00 AM – 11:00 PM"
+        ),
+        .init(
+            id: "b13",
+            name: "Rolls On Wheels",
+            neighborhood: "Indiranagar",
+            city: "Bengaluru",
+            categories: ["Kebabs & Rolls", "Street Food", "Cheap Eats"],
+            shortDescription: "Kathi rolls and egg rolls that locals recommend without thinking twice.",
+            priceLevel: 1,
+            perfectFor: ["Quick bite", "After work"],
+            recommendedByContactIds: ["u4", "u1"],
+            imageSymbol: "flame",
+            address: "12th Main, Indiranagar",
+            hours: "12:00 – 11:00 PM"
+        ),
+        .init(
+            id: "b14",
+            name: "Milano Ice Cream",
+            neighborhood: "Indiranagar",
+            city: "Bengaluru",
+            categories: ["Desserts"],
+            shortDescription: "Italian-style scoops and a classic Indiranagar dessert stop.",
+            priceLevel: 2,
+            perfectFor: ["Dessert run", "Date"],
+            recommendedByContactIds: ["u5", "u9", "u3"],
+            imageSymbol: "birthday.cake.fill",
+            address: "100 Feet Road, Indiranagar",
+            hours: "11:00 AM – 12:00 AM"
+        ),
+        .init(
+            id: "b15",
+            name: "Toit Brewpub",
+            neighborhood: "Indiranagar",
+            city: "Bengaluru",
+            categories: ["Cafe & Coffee", "Pizza & Pasta"],
+            shortDescription: "Crowded, trusted Indiranagar hangout for pizza and catch-ups.",
+            priceLevel: 3,
+            perfectFor: ["Friends", "Celebrations"],
+            recommendedByContactIds: ["u9", "u6"],
+            imageSymbol: "fork.knife",
+            address: "100 Feet Road, Indiranagar",
+            hours: "12:00 – 11:30 PM"
         )
     ]
 

@@ -103,7 +103,7 @@ struct BusinessCard: View {
                     .font(.caption)
                     .foregroundStyle(AppTheme.muted)
                 TrustBadge(
-                    count: result.trustScore,
+                    count: result.trustedRecommenders.count,
                     names: result.trustedRecommenders.map(\.name)
                 )
             }
