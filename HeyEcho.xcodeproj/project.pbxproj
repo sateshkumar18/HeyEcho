@@ -27,6 +27,10 @@
 		A10000000000000000000012 /* SeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* SeedService.swift */; };
 		A10000000000000000000013 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B10000000000000000000001 /* FirebaseAuth */; };
 		A10000000000000000000014 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = B10000000000000000000002 /* FirebaseFirestore */; };
+		A10000000000000000000015 /* PhoneNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000015 /* PhoneNormalizer.swift */; };
+		A10000000000000000000016 /* TrustEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000016 /* TrustEngine.swift */; };
+		A10000000000000000000017 /* ContactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000017 /* ContactsService.swift */; };
+		A10000000000000000000018 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000018 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +53,10 @@
 		A20000000000000000000010 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		A20000000000000000000011 /* FirestoreRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreRepository.swift; sourceTree = "<group>"; };
 		A20000000000000000000012 /* SeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedService.swift; sourceTree = "<group>"; };
+		A20000000000000000000015 /* PhoneNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNormalizer.swift; sourceTree = "<group>"; };
+		A20000000000000000000016 /* TrustEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustEngine.swift; sourceTree = "<group>"; };
+		A20000000000000000000017 /* ContactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsService.swift; sourceTree = "<group>"; };
+		A20000000000000000000018 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +85,7 @@
 			children = (
 				A20000000000000000000001 /* HeyEchoApp.swift */,
 				A2000000000000000000000E /* Assets.xcassets */,
+				A20000000000000000000018 /* GoogleService-Info.plist */,
 				A50000000000000000000004 /* Models */,
 				A50000000000000000000005 /* Data */,
 				A50000000000000000000006 /* Theme */,
@@ -107,6 +116,9 @@
 			children = (
 				A20000000000000000000005 /* StaticData.swift */,
 				A20000000000000000000006 /* AppState.swift */,
+				A20000000000000000000015 /* PhoneNormalizer.swift */,
+				A20000000000000000000016 /* TrustEngine.swift */,
+				A20000000000000000000017 /* ContactsService.swift */,
 				A5000000000000000000000F /* Firebase */,
 			);
 			path = Data;
@@ -267,6 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1000000000000000000000E /* Assets.xcassets in Resources */,
+				A10000000000000000000018 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,6 +307,9 @@
 				A10000000000000000000010 /* AuthService.swift in Sources */,
 				A10000000000000000000011 /* FirestoreRepository.swift in Sources */,
 				A10000000000000000000012 /* SeedService.swift in Sources */,
+				A10000000000000000000015 /* PhoneNormalizer.swift in Sources */,
+				A10000000000000000000016 /* TrustEngine.swift in Sources */,
+				A10000000000000000000017 /* ContactsService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,6 +359,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = HeyEcho;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
+				INFOPLIST_KEY_NSContactsUsageDescription = "HeyEcho matches your phone contacts to people already on the app so you can pick Personal GoTo's for trusted food recommendations.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -373,6 +390,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = HeyEcho;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
+				INFOPLIST_KEY_NSContactsUsageDescription = "HeyEcho matches your phone contacts to people already on the app so you can pick Personal GoTo's for trusted food recommendations.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

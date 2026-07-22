@@ -20,6 +20,9 @@ xcuserdata/
 # CocoaPods
 Pods/
 
-# Firebase (keep real plist out of git; use Console download locally)
-GoogleService-Info.plist
+# Firebase
+# Real plist is committed for this private team workflow (Mac pull).
+# If the repo is ever public, restrict the API key in Google Cloud Console
+# and consider gitignoring this file again.
+# GoogleService-Info.plist
 !GoogleService-Info.plist.example
