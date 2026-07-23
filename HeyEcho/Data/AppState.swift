@@ -56,8 +56,14 @@ final class AppState: ObservableObject {
         auth.refreshFromFirebase()
         contactsStatus = ContactsService.accessStatus()
 
+        // Always keep bundled seed visible first so Home/Search never go blank.
+        let bundled = PilotSeedLoader.load()
+        if businesses.isEmpty || !FirebaseBootstrap.isConfigured {
+            applyBundledDirectory(bundled)
+        }
+
         guard FirebaseBootstrap.isConfigured else {
-            remoteConfig = .fallback
+            remoteConfig = bundled.config.foodCities.isEmpty ? .fallback : bundled.config
             await refreshContactsFromDevice(fallbackToDirectory: true)
             return
         }
@@ -65,37 +71,10 @@ final class AppState: ObservableObject {
         isBootstrapping = true
         defer { isBootstrapping = false }
 
-        do {
-            // Cloud mode starts empty until Firestore is loaded (no static demo overlay).
-            contacts = []
-            businesses = []
-            directoryContacts = []
+        await loadCloudDirectoryPreferringRemote(fallback: bundled)
 
-            if let uid = auth.userId {
-                do {
-                    try await SeedService.seedPilotDataIfNeeded(using: repo)
-                } catch {
-                    authError = "Could not seed Firebase directory: \(error.localizedDescription)"
-                }
-
-                do {
-                    remoteConfig = try await repo.fetchAppConfig()
-                } catch {
-                    remoteConfig = PilotSeedLoader.load().config
-                }
-                if profile.foodCity.isEmpty {
-                    profile.foodCity = remoteConfig.defaultFoodCity
-                }
-
-                directoryContacts = try await repo.fetchContacts()
-                businesses = try await repo.fetchBusinesses()
-
-                if businesses.isEmpty {
-                    applyBundledDirectoryFallback(reason: "No businesses in Firestore yet. Using bundled seed; check seed / rules, then relaunch.")
-                }
-
-                await refreshContactsFromDevice(fallbackToDirectory: true)
-
+        if let uid = auth.userId, !uid.hasPrefix("local_") {
+            do {
                 if let remote = try await repo.fetchUser(uid: uid) {
                     profile = remote.profile
                     selectedGotoIds = Set(remote.profile.gotoIds)
@@ -113,11 +92,57 @@ final class AppState: ObservableObject {
                         profile.phone = phone
                     }
                 }
+            } catch {
+                // Profile sync can fail on permissions; directory already has fallback.
+                if authError == nil {
+                    authError = error.localizedDescription
+                }
             }
-            persistLocalCache()
-        } catch {
-            authError = error.localizedDescription
         }
+        persistLocalCache()
+    }
+
+    /// Tries Firestore directory; on permission/empty errors keeps bundled seed on screen.
+    private func loadCloudDirectoryPreferringRemote(fallback: PilotSeedLoader.Payload) async {
+        applyBundledDirectory(fallback)
+
+        guard let uid = auth.userId, !uid.hasPrefix("local_") else {
+            await refreshContactsFromDevice(fallbackToDirectory: true)
+            return
+        }
+
+        do {
+            try await SeedService.seedPilotDataIfNeeded(using: repo)
+        } catch {
+            authError = "Could not seed Firebase: \(error.localizedDescription). Showing bundled places."
+        }
+
+        do {
+            remoteConfig = try await repo.fetchAppConfig()
+        } catch {
+            remoteConfig = fallback.config.foodCities.isEmpty ? .fallback : fallback.config
+        }
+        if profile.foodCity.isEmpty {
+            profile.foodCity = remoteConfig.defaultFoodCity
+        }
+
+        do {
+            let remoteContacts = try await repo.fetchContacts()
+            let remoteBusinesses = try await repo.fetchBusinesses()
+            if remoteBusinesses.isEmpty {
+                authError = "Firestore has no businesses yet. Showing bundled Indiranagar places. Publish firestore.rules + enable Anonymous Auth, then relaunch."
+            } else {
+                directoryContacts = remoteContacts.isEmpty ? fallback.contacts : remoteContacts
+                businesses = remoteBusinesses
+                contacts = directoryContacts
+                authError = nil
+            }
+        } catch {
+            authError = "\(error.localizedDescription) — showing bundled places. Publish firestore.rules in Firebase Console."
+            applyBundledDirectory(fallback)
+        }
+
+        await refreshContactsFromDevice(fallbackToDirectory: true)
     }
 
     var personalGotos: [ContactPerson] {
@@ -418,32 +443,9 @@ final class AppState: ObservableObject {
             }
 
             if isCloudEnabled, auth.userId != nil, !(auth.userId ?? "").hasPrefix("local_") {
-                do {
-                    try await SeedService.seedPilotDataIfNeeded(using: repo)
-                } catch {
-                    authError = "Could not seed Firebase directory: \(error.localizedDescription)"
-                }
-                do {
-                    remoteConfig = try await repo.fetchAppConfig()
-                } catch {
-                    remoteConfig = PilotSeedLoader.load().config
-                }
-                do {
-                    directoryContacts = try await repo.fetchContacts()
-                    businesses = try await repo.fetchBusinesses()
-                } catch {
-                    directoryContacts = []
-                    businesses = []
-                    authError = "Could not load Firestore directory: \(error.localizedDescription)"
-                }
-                // Never leave the user on a blank Home — fall back to bundled seed.
-                if businesses.isEmpty {
-                    applyBundledDirectoryFallback(reason: authError ?? "Firestore directory empty after seed.")
-                }
-                await refreshContactsFromDevice(fallbackToDirectory: true)
+                await loadCloudDirectoryPreferringRemote(fallback: PilotSeedLoader.load())
                 await persist()
             } else {
-                // Local path — bundled pilot seed only (no Firebase)
                 applyBundledDirectory(PilotSeedLoader.load())
                 persistLocalCache()
             }

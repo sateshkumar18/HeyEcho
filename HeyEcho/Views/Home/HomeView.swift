@@ -225,7 +225,7 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Directory still loading")
                 .font(.headline)
-            Text(appState.authError ?? "Reopen the app after Firebase seed finishes. Check Profile for any error.")
+            Text(appState.authError ?? "Reopen the app after Firebase seed finishes.")
                 .font(.subheadline)
                 .foregroundStyle(AppTheme.muted)
         }
