@@ -104,7 +104,7 @@ final class AppState: ObservableObject {
                         collections = StaticData.sampleCollections
                     }
                     syncCollectionIds()
-                } else {
+        } else {
                     profile.id = uid
                     if let phone = auth.phoneNumber {
                         profile.phone = phone
@@ -297,9 +297,7 @@ final class AppState: ObservableObject {
     func sendOTP() async {
         authError = nil
         do {
-            if isCloudEnabled {
-                try await auth.sendOTP(to: profile.phone)
-            }
+            try await auth.sendOTP(to: profile.phone)
         } catch {
             authError = error.localizedDescription
         }
@@ -307,18 +305,19 @@ final class AppState: ObservableObject {
 
     func verifyOTP(_ code: String) async -> Bool {
         authError = nil
-        if isCloudEnabled {
-            do {
-                let uid = try await auth.verifyOTP(code)
-                profile.id = uid
-                if let phone = auth.phoneNumber {
-                    profile.phone = phone
-                }
+        do {
+            let uid = try await auth.verifyOTP(code)
+            profile.id = uid
+            if let phone = auth.phoneNumber {
+                profile.phone = phone
+            }
+
+            if isCloudEnabled, auth.userId != nil, !(auth.userId ?? "").hasPrefix("local_") {
                 do {
                     try await SeedService.seedPilotDataIfNeeded(using: repo)
                 } catch {
                     #if DEBUG
-                    authError = "Directory seed skipped: \(error.localizedDescription)"
+                    print("[HeyEcho] Seed skipped: \(error.localizedDescription)")
                     #endif
                 }
                 do {
@@ -326,26 +325,28 @@ final class AppState: ObservableObject {
                 } catch {
                     remoteConfig = .fallback
                 }
-                directoryContacts = try await repo.fetchContacts()
-                businesses = try await repo.fetchBusinesses()
+                do {
+                    directoryContacts = try await repo.fetchContacts()
+                    businesses = try await repo.fetchBusinesses()
+                } catch {
+                    directoryContacts = StaticData.contacts
+                    businesses = StaticData.businesses
+                }
                 if directoryContacts.isEmpty { directoryContacts = StaticData.contacts }
                 if businesses.isEmpty { businesses = StaticData.businesses }
                 await refreshContactsFromDevice(fallbackToDirectory: true)
                 await persist()
-                return true
-            } catch {
-                authError = error.localizedDescription
-                return false
-            }
-        } else {
-            guard code == "123456" else {
-                authError = "Invalid OTP. In local mode use 123456."
-                return false
-            }
-            if profile.id == "me" || profile.id.isEmpty {
-                profile.id = UUID().uuidString
+            } else {
+                // Local / anonymous-disabled path — keep static pilot data
+                directoryContacts = StaticData.contacts
+                contacts = StaticData.contacts
+                businesses = StaticData.businesses
+                persistLocalCache()
             }
             return true
+        } catch {
+            authError = error.localizedDescription
+            return false
         }
     }
 

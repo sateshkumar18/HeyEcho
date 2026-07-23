@@ -10,23 +10,26 @@ enum AuthError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .firebaseNotConfigured:
-            return "Firebase is not connected. Add GoogleService-Info.plist (see FIREBASE_SETUP.md)."
+            return "Firebase is not connected."
         case .invalidPhone:
             return "Enter a valid 10-digit Indian mobile number."
         case .missingVerification:
-            return "Request an OTP first."
+            return "Tap Send OTP first."
         case .underlying(let message):
             return message
         }
     }
 }
 
+/// Phase 1 auth: Phone Auth on Simulator hangs (reCAPTCHA/APNs).
+/// We use a fixed test OTP + Anonymous Firebase session so onboarding always continues.
 @MainActor
 final class AuthService: ObservableObject {
     @Published private(set) var userId: String?
     @Published private(set) var phoneNumber: String?
+    @Published private(set) var otpReady = false
 
-    private var verificationID: String?
+    private static let testOTP = "123456"
 
     var isSignedIn: Bool { userId != nil }
 
@@ -45,7 +48,6 @@ final class AuthService: ObservableObject {
         phoneNumber = user?.phoneNumber
     }
 
-    /// Formats raw input to E.164 (+91…).
     static func e164IndianPhone(from raw: String) -> String? {
         let digits = raw.filter(\.isNumber)
         if digits.count == 10 {
@@ -60,68 +62,66 @@ final class AuthService: ObservableObject {
         return nil
     }
 
+    /// Instant — does not wait on Firebase Phone Auth (that call hangs on Simulator).
     func sendOTP(to rawPhone: String) async throws {
-        guard FirebaseBootstrap.isConfigured else { throw AuthError.firebaseNotConfigured }
-        guard let e164 = Self.e164IndianPhone(from: rawPhone) else { throw AuthError.invalidPhone }
-
-        // Test numbers return quickly; real numbers may open reCAPTCHA on Simulator.
-        let id: String = try await withCheckedThrowingContinuation { continuation in
-            PhoneAuthProvider.provider().verifyPhoneNumber(e164, uiDelegate: nil) { verificationID, error in
-                if let error {
-                    let ns = error as NSError
-                    var message = error.localizedDescription
-                    if ns.code == 17020 || message.lowercased().contains("network") {
-                        message = "Network error sending OTP. Check internet and try again."
-                    } else if message.lowercased().contains("captcha") || message.lowercased().contains("app verification") {
-                        message = "App verification failed. Use a Firebase test phone number (+91… with fixed code), or complete the reCAPTCHA prompt."
-                    }
-                    continuation.resume(throwing: AuthError.underlying(message))
-                    return
-                }
-                guard let verificationID else {
-                    continuation.resume(throwing: AuthError.underlying("No verification ID returned."))
-                    return
-                }
-                continuation.resume(returning: verificationID)
-            }
+        guard let e164 = Self.e164IndianPhone(from: rawPhone) else {
+            throw AuthError.invalidPhone
         }
-        verificationID = id
         phoneNumber = e164
+        otpReady = true
+        print("[HeyEcho] OTP ready for \(e164). Use code \(Self.testOTP).")
     }
 
+    /// Accepts fixed test code `123456`, then signs into Firebase (Anonymous) for Firestore.
     func verifyOTP(_ code: String) async throws -> String {
-        guard FirebaseBootstrap.isConfigured else { throw AuthError.firebaseNotConfigured }
-        guard let verificationID else { throw AuthError.missingVerification }
+        let trimmed = code.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard otpReady || phoneNumber != nil else { throw AuthError.missingVerification }
+        guard trimmed == Self.testOTP else {
+            throw AuthError.underlying("Invalid OTP. Use \(Self.testOTP).")
+        }
 
-        let credential = PhoneAuthProvider.provider().credential(
-            withVerificationID: verificationID,
-            verificationCode: code.trimmingCharacters(in: .whitespacesAndNewlines)
-        )
+        if FirebaseBootstrap.isConfigured {
+            do {
+                let result = try await signInAnonymously()
+                userId = result.user.uid
+                print("[HeyEcho] Signed in anonymously as \(result.user.uid)")
+                return result.user.uid
+            } catch {
+                // Anonymous provider may be disabled — still allow onboarding locally.
+                let localId = "local_" + UUID().uuidString
+                userId = localId
+                print("[HeyEcho] Anonymous Auth failed (\(error.localizedDescription)). Continuing with \(localId). Enable Anonymous sign-in in Firebase Console.")
+                return localId
+            }
+        } else {
+            let localId = UUID().uuidString
+            userId = localId
+            return localId
+        }
+    }
 
-        let result: AuthDataResult = try await withCheckedThrowingContinuation { continuation in
-            Auth.auth().signIn(with: credential) { result, error in
+    private func signInAnonymously() async throws -> AuthDataResult {
+        try await withCheckedThrowingContinuation { continuation in
+            Auth.auth().signInAnonymously { result, error in
                 if let error {
                     continuation.resume(throwing: AuthError.underlying(error.localizedDescription))
                     return
                 }
                 guard let result else {
-                    continuation.resume(throwing: AuthError.underlying("Sign-in failed."))
+                    continuation.resume(throwing: AuthError.underlying("Anonymous sign-in failed."))
                     return
                 }
                 continuation.resume(returning: result)
             }
         }
-
-        userId = result.user.uid
-        phoneNumber = result.user.phoneNumber
-        return result.user.uid
     }
 
     func signOut() throws {
-        guard FirebaseBootstrap.isConfigured else { return }
-        try Auth.auth().signOut()
+        if FirebaseBootstrap.isConfigured {
+            try? Auth.auth().signOut()
+        }
         userId = nil
         phoneNumber = nil
-        verificationID = nil
+        otpReady = false
     }
 }

@@ -204,7 +204,7 @@ private struct ProfileSetupStep: View {
                 }
 
                 if appState.isCloudEnabled {
-                    Text("1) Add +919390217816 in Firebase → Phone numbers for testing with code 123456.\n2) Tap Send OTP below.\n3) OTP field appears — type 123456 (no SMS).")
+                    Text("Phase 1 test login: tap Send OTP, then enter 123456. (Real SMS Phone Auth is deferred — it hangs on Simulator.)")
                         .font(.caption)
                         .foregroundStyle(AppTheme.muted)
                         .fixedSize(horizontal: false, vertical: true)
@@ -218,17 +218,9 @@ private struct ProfileSetupStep: View {
                 if otpSent {
                     field("OTP code", text: $otp, icon: "lock.shield")
                         .keyboardType(.numberPad)
-                    Text(appState.isCloudEnabled
-                         ? "Enter the fixed test code from Firebase (e.g. 123456). No SMS expected."
-                         : "Local mode test OTP: 123456")
-                        .font(.caption)
-                        .foregroundStyle(AppTheme.muted)
-                    Button("Resend OTP") {
-                        Task { await sendOTP() }
-                    }
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(AppTheme.brand)
-                    .disabled(isWorking)
+                    Text("Enter OTP: 123456")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(AppTheme.brand)
                 }
 
                 if let authError = appState.authError {
@@ -244,27 +236,20 @@ private struct ProfileSetupStep: View {
                     Button {
                         Task { await sendOTP() }
                     } label: {
-                        HStack(spacing: 10) {
-                            if isWorking {
-                                ProgressView()
-                                    .tint(.white)
-                            }
-                            Text(isWorking ? "Sending OTP…" : "Send OTP")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 4)
+                        Text("Send OTP")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 4)
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .disabled(
-                        isWorking
-                        || appState.profile.phone.filter(\.isNumber).count < 10
+                        appState.profile.phone.filter(\.isNumber).count < 10
                         || appState.profile.name.isEmpty
                     )
                 } else {
                     Button {
                         Task {
                             isWorking = true
-                            let ok = await appState.verifyOTP(otp)
+                            let ok = await appState.verifyOTP(otp.isEmpty ? "123456" : otp)
                             isWorking = false
                             if ok { onContinue() }
                         }
@@ -280,7 +265,7 @@ private struct ProfileSetupStep: View {
                         .padding(.vertical, 4)
                     }
                     .buttonStyle(PrimaryButtonStyle())
-                    .disabled(isWorking || otp.count < 6)
+                    .disabled(isWorking)
                 }
             }
             .padding(24)
@@ -288,13 +273,12 @@ private struct ProfileSetupStep: View {
     }
 
     private func sendOTP() async {
-        isWorking = true
         appState.authError = nil
         await appState.sendOTP()
-        isWorking = false
-        // Only reveal OTP field after Firebase accepts the send (or local mode).
-        if appState.authError == nil {
-            withAnimation { otpSent = true }
+        // Instant — never waits on Firebase Phone Auth.
+        withAnimation {
+            otpSent = true
+            if otp.isEmpty { otp = "123456" }
         }
     }
 

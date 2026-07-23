@@ -1,5 +1,6 @@
 import Foundation
 import FirebaseCore
+import FirebaseAuth
 
 enum BackendMode: String {
     case local = "Local (device only)"
@@ -24,6 +25,14 @@ enum FirebaseBootstrap {
             FirebaseApp.configure()
         }
         isConfigured = FirebaseApp.app() != nil
+
+        #if DEBUG
+        // Lets Simulator skip APNs/reCAPTCHA hang when using Firebase Console test numbers.
+        // Do not enable this for App Store / Release builds.
+        Auth.auth().settings?.isAppVerificationDisabledForTesting = true
+        print("[HeyEcho] Phone Auth app verification disabled for testing (DEBUG).")
+        #endif
+
         print("[HeyEcho] Backend mode: \(mode.rawValue)")
     }
 }
