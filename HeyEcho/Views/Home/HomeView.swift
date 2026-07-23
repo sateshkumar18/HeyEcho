@@ -63,6 +63,9 @@ struct HomeView: View {
                         .foregroundStyle(AppTheme.brand)
                 }
             }
+            .refreshable {
+                await appState.refreshDirectory()
+            }
             .onAppear {
                 withAnimation(.easeOut(duration: 0.55)) { appeared = true }
             }
@@ -113,6 +116,9 @@ struct HomeView: View {
                     .font(.subheadline)
             }
             .foregroundStyle(AppTheme.muted)
+            Text("\(appState.businesses.count) places · pull down to refresh from cloud")
+                .font(.caption)
+                .foregroundStyle(AppTheme.muted.opacity(0.9))
         }
     }
 

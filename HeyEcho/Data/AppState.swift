@@ -145,6 +145,16 @@ final class AppState: ObservableObject {
         await refreshContactsFromDevice(fallbackToDirectory: true)
     }
 
+    /// Pull latest restaurants/hotels from Firestore (after you add docs in Console).
+    func refreshDirectory() async {
+        let bundled = PilotSeedLoader.load()
+        guard isCloudEnabled else {
+            applyBundledDirectory(bundled)
+            return
+        }
+        await loadCloudDirectoryPreferringRemote(fallback: bundled)
+    }
+
     var personalGotos: [ContactPerson] {
         contacts.filter { selectedGotoIds.contains($0.id) }
     }

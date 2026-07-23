@@ -186,6 +186,14 @@ struct ProfileView: View {
                         }
                         #endif
                         if appState.isCloudEnabled {
+                            Text("\(appState.businesses.count) places loaded from directory")
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.muted)
+                            Button("Refresh places from cloud") {
+                                Task { await appState.refreshDirectory() }
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.brand)
                             Button("Sign out") {
                                 appState.signOutCloud()
                             }

@@ -1,8 +1,8 @@
 import Foundation
 
-/// Uploads Phase 1 **real-location** pilot seed into Firestore.
-/// Source of truth after seed: Firebase `businesses`, `contacts`, `config/app`.
-/// If an older thin demo directory exists, missing docs are merged up to the full seed set.
+/// First-time upload of bundled `pilot_seed.json` into Firestore.
+/// After that, **Firestore Console is the source of truth** — add/edit/delete places there.
+/// The app will not overwrite a non-empty `businesses` collection from the bundle.
 enum SeedService {
     static func seedPilotDataIfNeeded(using repo: FirestoreRepository) async throws {
         let seed = PilotSeedLoader.load()
@@ -11,8 +11,8 @@ enum SeedService {
         }
 
         let count = try await repo.businessCount()
-        // Already at (or above) full pilot size — skip.
-        if count >= seed.businesses.count { return }
+        // Any existing Console / prior seed data wins — do not re-merge the bundle.
+        if count > 0 { return }
 
         for contact in seed.contacts {
             try await repo.upsertContact(contact)

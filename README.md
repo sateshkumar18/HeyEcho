@@ -33,7 +33,7 @@ Trust-based local food discovery iOS app. Phase 1 supports **local mode** and **
 - Profile: edit GoTo’s and known-for tags; shows current backend mode
 
 **Production checklist:** [`PHASE1_PRODUCTION.md`](PHASE1_PRODUCTION.md)  
-**Directory seed (Places → JSON → Firestore):** [`DATA_SEED.md`](DATA_SEED.md)  
+**Directory seed:** [`DATA_SEED.md`](DATA_SEED.md) · **Add places in Console:** [`ADD_BUSINESS.md`](ADD_BUSINESS.md)  
 **Go live:** follow [`FIREBASE_SETUP.md`](FIREBASE_SETUP.md).
 
 ## Trust ranking (Phase 1) — dynamic

@@ -53,6 +53,9 @@ struct SearchView: View {
             .background(AppTheme.atmosphere)
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.large)
+            .refreshable {
+                await appState.refreshDirectory()
+            }
         }
     }
 

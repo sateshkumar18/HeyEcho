@@ -32,6 +32,9 @@ struct BrowseView: View {
             }
             .background(AppTheme.atmosphere)
             .navigationTitle("Browse")
+            .refreshable {
+                await appState.refreshDirectory()
+            }
         }
     }
 
