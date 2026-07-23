@@ -30,3 +30,4 @@ Pods/
 # Google Places one-time seed (never commit secrets / raw caches)
 scripts/places_seed/.env
 scripts/places_seed/places_raw_cache.json
+scripts/places_seed/__pycache__/
