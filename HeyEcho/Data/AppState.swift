@@ -63,35 +63,34 @@ final class AppState: ObservableObject {
         defer { isBootstrapping = false }
 
         do {
-            contacts = StaticData.contacts
-            businesses = StaticData.businesses
+            // Cloud mode starts empty until Firestore is loaded (no static demo overlay).
+            contacts = []
+            businesses = []
+            directoryContacts = []
 
             if let uid = auth.userId {
                 do {
+                    try await SeedService.seedPilotDataIfNeeded(using: repo)
+                } catch {
+                    authError = "Could not seed Firebase directory: \(error.localizedDescription)"
+                }
+
+                do {
                     remoteConfig = try await repo.fetchAppConfig()
                 } catch {
-                    remoteConfig = .fallback
+                    remoteConfig = PilotSeedLoader.load().config
                 }
                 if profile.foodCity.isEmpty {
                     profile.foodCity = remoteConfig.defaultFoodCity
                 }
 
-                do {
-                    try await SeedService.seedPilotDataIfNeeded(using: repo)
-                } catch {
-                    // Production rules deny client directory writes — seed via Console instead.
-                    #if DEBUG
-                    authError = "Directory seed skipped: \(error.localizedDescription). Import businesses/contacts in Firebase Console if empty."
-                    #endif
-                }
                 directoryContacts = try await repo.fetchContacts()
                 businesses = try await repo.fetchBusinesses()
-                if directoryContacts.isEmpty {
-                    directoryContacts = StaticData.contacts
-                }
+
                 if businesses.isEmpty {
-                    businesses = StaticData.businesses
+                    authError = "No businesses in Firestore yet. Check seed / rules, then relaunch."
                 }
+
                 await refreshContactsFromDevice(fallbackToDirectory: true)
 
                 if let remote = try await repo.fetchUser(uid: uid) {
@@ -104,7 +103,7 @@ final class AppState: ObservableObject {
                         collections = StaticData.sampleCollections
                     }
                     syncCollectionIds()
-        } else {
+                } else {
                     profile.id = uid
                     if let phone = auth.phoneNumber {
                         profile.phone = phone
@@ -316,31 +315,33 @@ final class AppState: ObservableObject {
                 do {
                     try await SeedService.seedPilotDataIfNeeded(using: repo)
                 } catch {
-                    #if DEBUG
-                    print("[HeyEcho] Seed skipped: \(error.localizedDescription)")
-                    #endif
+                    authError = "Could not seed Firebase directory: \(error.localizedDescription)"
                 }
                 do {
                     remoteConfig = try await repo.fetchAppConfig()
                 } catch {
-                    remoteConfig = .fallback
+                    remoteConfig = PilotSeedLoader.load().config
                 }
                 do {
                     directoryContacts = try await repo.fetchContacts()
                     businesses = try await repo.fetchBusinesses()
                 } catch {
-                    directoryContacts = StaticData.contacts
-                    businesses = StaticData.businesses
+                    directoryContacts = []
+                    businesses = []
+                    authError = "Could not load Firestore directory: \(error.localizedDescription)"
                 }
-                if directoryContacts.isEmpty { directoryContacts = StaticData.contacts }
-                if businesses.isEmpty { businesses = StaticData.businesses }
+                if businesses.isEmpty, authError == nil {
+                    authError = "No businesses in Firestore yet. Check seed / rules, then relaunch."
+                }
                 await refreshContactsFromDevice(fallbackToDirectory: true)
                 await persist()
             } else {
-                // Local / anonymous-disabled path — keep static pilot data
-                directoryContacts = StaticData.contacts
-                contacts = StaticData.contacts
-                businesses = StaticData.businesses
+                // Local path — bundled pilot seed only (no Firebase)
+                let seed = PilotSeedLoader.load()
+                directoryContacts = seed.contacts
+                contacts = seed.contacts
+                businesses = seed.businesses
+                remoteConfig = seed.config
                 persistLocalCache()
             }
             return true

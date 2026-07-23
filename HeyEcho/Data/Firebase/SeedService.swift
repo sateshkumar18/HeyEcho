@@ -1,24 +1,25 @@
 import Foundation
 
-/// Uploads Phase 1 pilot seed into Firestore when collections are empty.
-///
-/// Production: seed via Firebase Console / Admin SDK, then publish locked rules
-/// from `firestore.rules` (client writes to contacts/businesses are denied).
-/// Client seeding is Debug-only so Release builds never mutate the directory.
+/// Uploads Phase 1 **real-location** pilot seed into Firestore.
+/// Source of truth after seed: Firebase `businesses`, `contacts`, `config/app`.
+/// If an older thin demo directory exists, missing docs are merged up to the full seed set.
 enum SeedService {
     static func seedPilotDataIfNeeded(using repo: FirestoreRepository) async throws {
-        #if DEBUG
-        let count = try await repo.businessCount()
-        guard count == 0 else { return }
+        let seed = PilotSeedLoader.load()
+        guard !seed.businesses.isEmpty else {
+            throw FirestoreError.underlying("Bundled pilot_seed.json missing or empty.")
+        }
 
-        for contact in StaticData.contacts {
+        let count = try await repo.businessCount()
+        // Already at (or above) full pilot size — skip.
+        if count >= seed.businesses.count { return }
+
+        for contact in seed.contacts {
             try await repo.upsertContact(contact)
         }
-        for business in StaticData.businesses {
+        for business in seed.businesses {
             try await repo.upsertBusiness(business)
         }
-        #else
-        _ = repo
-        #endif
+        try await repo.upsertAppConfig(seed.config)
     }
 }

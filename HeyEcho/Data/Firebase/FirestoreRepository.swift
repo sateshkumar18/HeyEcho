@@ -100,6 +100,17 @@ final class FirestoreRepository {
         return AppRemoteConfig.fromFirestore(data)
     }
 
+    func upsertAppConfig(_ config: AppRemoteConfig) async throws {
+        let db = try requireDB()
+        let data: [String: Any] = [
+            "foodCities": config.foodCities,
+            "gotoWeight": config.gotoWeight,
+            "cityBoost": config.cityBoost,
+            "defaultFoodCity": config.defaultFoodCity
+        ]
+        try await db.collection("config").document("app").setData(data, merge: true)
+    }
+
     // MARK: - Collections (per user)
 
     func fetchCollections(ownerId: String) async throws -> [FoodCollection] {
@@ -173,7 +184,7 @@ extension ContactPerson {
 
 extension Business {
     var firestoreData: [String: Any] {
-        [
+        var data: [String: Any] = [
             "name": name,
             "neighborhood": neighborhood,
             "city": city,
@@ -186,6 +197,9 @@ extension Business {
             "address": address,
             "hours": hours
         ]
+        if let latitude { data["latitude"] = latitude }
+        if let longitude { data["longitude"] = longitude }
+        return data
     }
 
     static func fromFirestore(_ data: [String: Any], id: String) -> Business? {
@@ -202,7 +216,9 @@ extension Business {
             recommendedByContactIds: data["recommendedByContactIds"] as? [String] ?? [],
             imageSymbol: data["imageSymbol"] as? String ?? "fork.knife",
             address: data["address"] as? String ?? "",
-            hours: data["hours"] as? String ?? ""
+            hours: data["hours"] as? String ?? "",
+            latitude: data["latitude"] as? Double,
+            longitude: data["longitude"] as? Double
         )
     }
 }

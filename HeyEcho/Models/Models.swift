@@ -33,6 +33,9 @@ struct Business: Identifiable, Hashable, Codable {
     var imageSymbol: String
     var address: String
     var hours: String
+    /// WGS84 coordinates for real map/location filtering (Phase 1 Firebase directory).
+    var latitude: Double?
+    var longitude: Double?
 }
 
 struct FoodCollection: Identifiable, Hashable, Codable {

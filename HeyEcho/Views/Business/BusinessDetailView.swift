@@ -82,6 +82,9 @@ struct BusinessDetailView: View {
                         infoRow(title: "Perfect for", value: business.perfectFor.joined(separator: " · "))
                         infoRow(title: "Address", value: business.address)
                         infoRow(title: "Hours", value: business.hours)
+                        if let lat = business.latitude, let lng = business.longitude {
+                            infoRow(title: "Location", value: String(format: "%.5f, %.5f", lat, lng))
+                        }
                     }
                     .padding(.vertical, 4)
 
