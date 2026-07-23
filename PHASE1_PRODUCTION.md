@@ -12,6 +12,7 @@ Use this before calling Phase 1 “done” and starting Phase 2.
 - [x] “What are you a GoTo for?” tagging (shared taxonomy)
 - [x] Home / Search / Browse with **trust ranking** (GoTo weight + city boost)
 - [x] Production directory seed: **~150** Bengaluru restaurants + hotels (real names/addresses)
+- [x] **Places API one-time seed script** (`scripts/places_seed`) — not a live in-app dependency
 - [x] Business tips (free text, **no stars**) synced to Firestore `tips`
 - [x] Favorites + collections (create / edit / delete / remove place)
 - [x] Edit GoTo’s + known-for from Profile after onboarding

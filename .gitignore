@@ -26,3 +26,7 @@ Pods/
 # and consider gitignoring this file again.
 # GoogleService-Info.plist
 !GoogleService-Info.plist.example
+
+# Google Places one-time seed (never commit secrets / raw caches)
+scripts/places_seed/.env
+scripts/places_seed/places_raw_cache.json
