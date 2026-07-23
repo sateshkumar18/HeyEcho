@@ -20,6 +20,7 @@ Use this before calling Phase 1 “done” and starting Phase 2.
 - [x] Demo “Replay onboarding” **Debug-only**; backend status **Debug-only**
 - [x] Production copy (no “test / Phase 1 demo / Blaze” language in Release UI)
 - [x] `NSContactsUsageDescription` for App Store privacy
+- [ ] Contacts privacy P0 (hash pending, invite caps, notice) — see `CONTACTS_DATA_HANDLING.md`
 
 ## Ops you must complete (cannot be done from code alone)
 
