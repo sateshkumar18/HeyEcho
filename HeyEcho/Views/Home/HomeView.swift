@@ -4,8 +4,14 @@ struct HomeView: View {
     @EnvironmentObject private var appState: AppState
     @State private var appeared = false
 
-    private var recommendations: [TrustRankedResult] {
+    /// Places your GoTo's actually recommend.
+    private var trustedRecommendations: [TrustRankedResult] {
         appState.search(query: "").filter { !$0.trustedRecommenders.isEmpty }
+    }
+
+    /// All places in the selected food city (always browsable).
+    private var nearbyPlaces: [TrustRankedResult] {
+        Array(appState.search(query: "").prefix(12))
     }
 
     var body: some View {
@@ -24,31 +30,24 @@ struct HomeView: View {
                         thinNetworkCard
                     }
 
-                    VStack(alignment: .leading, spacing: 4) {
-                        SectionHeader(
-                            title: "Recommended for you",
-                            subtitle: "Ranked by voices you trust"
-                        )
-
-                        if recommendations.isEmpty {
-                            emptyState
-                                .padding(.top, 12)
-                        } else {
-                            ForEach(Array(recommendations.prefix(8).enumerated()), id: \.element.id) { index, result in
-                                NavigationLink {
-                                    BusinessDetailView(businessId: result.business.id)
-                                } label: {
-                                    BusinessCard(result: result)
-                                }
-                                .buttonStyle(.plain)
-                                .opacity(appeared ? 1 : 0)
-                                .offset(y: appeared ? 0 : 10)
-                                .animation(
-                                    .easeOut(duration: 0.4).delay(0.05 * Double(index)),
-                                    value: appeared
-                                )
-                            }
+                    if appState.businesses.isEmpty {
+                        directoryEmptyState
+                    } else {
+                        if !trustedRecommendations.isEmpty {
+                            placeSection(
+                                title: "Recommended for you",
+                                subtitle: "Ranked by voices you trust",
+                                results: Array(trustedRecommendations.prefix(8))
+                            )
                         }
+
+                        placeSection(
+                            title: "In \(shortCity)",
+                            subtitle: trustedRecommendations.isEmpty
+                                ? "Restaurants & hotels near you — open Search or Browse for more"
+                                : "More restaurants & hotels in your area",
+                            results: nearbyPlaces
+                        )
                     }
                 }
                 .padding(.horizontal, 22)
@@ -66,6 +65,38 @@ struct HomeView: View {
             }
             .onAppear {
                 withAnimation(.easeOut(duration: 0.55)) { appeared = true }
+            }
+        }
+    }
+
+    private var shortCity: String {
+        guard let first = appState.profile.foodCity.split(separator: ",").first else {
+            return appState.profile.foodCity
+        }
+        return String(first).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func placeSection(title: String, subtitle: String, results: [TrustRankedResult]) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            SectionHeader(title: title, subtitle: subtitle)
+            if results.isEmpty {
+                emptyState
+                    .padding(.top, 12)
+            } else {
+                ForEach(Array(results.enumerated()), id: \.element.id) { index, result in
+                    NavigationLink {
+                        BusinessDetailView(businessId: result.business.id)
+                    } label: {
+                        BusinessCard(result: result)
+                    }
+                    .buttonStyle(.plain)
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 10)
+                    .animation(
+                        .easeOut(duration: 0.4).delay(0.05 * Double(index)),
+                        value: appeared
+                    )
+                }
             }
         }
     }
@@ -178,15 +209,29 @@ struct HomeView: View {
 
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("No trust matches yet")
+            Text("No places matched yet")
                 .font(.headline)
-            Text("Follow a GoTo or browse restaurants and hotels to discover places.")
+            Text("Try Browse → Hotels or Biryani, or open Search.")
                 .font(.subheadline)
                 .foregroundStyle(AppTheme.muted)
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppTheme.brand.opacity(0.06))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
+    private var directoryEmptyState: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Directory still loading")
+                .font(.headline)
+            Text(appState.authError ?? "Reopen the app after Firebase seed finishes. Check Profile for any error.")
+                .font(.subheadline)
+                .foregroundStyle(AppTheme.muted)
+        }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppTheme.accent.opacity(0.08))
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }

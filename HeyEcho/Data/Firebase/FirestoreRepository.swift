@@ -229,16 +229,23 @@ extension Business {
             city: data["city"] as? String ?? "",
             categories: data["categories"] as? [String] ?? [],
             shortDescription: data["shortDescription"] as? String ?? "",
-            priceLevel: data["priceLevel"] as? Int ?? 1,
+            priceLevel: intValue(data["priceLevel"]) ?? 1,
             perfectFor: data["perfectFor"] as? [String] ?? [],
             recommendedByContactIds: data["recommendedByContactIds"] as? [String] ?? [],
             imageSymbol: data["imageSymbol"] as? String ?? "fork.knife",
             address: data["address"] as? String ?? "",
             hours: data["hours"] as? String ?? "",
-            latitude: data["latitude"] as? Double,
-            longitude: data["longitude"] as? Double
+            latitude: data["latitude"] as? Double ?? (data["latitude"] as? NSNumber)?.doubleValue,
+            longitude: data["longitude"] as? Double ?? (data["longitude"] as? NSNumber)?.doubleValue
         )
     }
+}
+
+private func intValue(_ raw: Any?) -> Int? {
+    if let i = raw as? Int { return i }
+    if let n = raw as? NSNumber { return n.intValue }
+    if let i64 = raw as? Int64 { return Int(i64) }
+    return nil
 }
 
 extension FoodCollection {
