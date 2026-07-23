@@ -7,10 +7,12 @@ final class AppState: ObservableObject {
     @Published var hasCompletedOnboarding: Bool
     @Published var profile: UserProfile
     @Published var selectedGotoIds: Set<String>
+    @Published var pendingGotoIds: Set<String>
     @Published var favoriteBusinessIds: Set<String>
     @Published var collections: [FoodCollection]
     @Published var contacts: [ContactPerson]
     @Published var businesses: [Business]
+    @Published var tipsByBusinessId: [String: [Tip]] = [:]
 
     @Published var isBootstrapping = false
     @Published var isSaving = false
@@ -39,6 +41,7 @@ final class AppState: ObservableObject {
         hasCompletedOnboarding = loaded.onboarding
         profile = loaded.profile
         selectedGotoIds = loaded.gotos
+        pendingGotoIds = Set(loaded.profile.pendingGotoIds)
         favoriteBusinessIds = loaded.favorites
         collections = loaded.collections
         contacts = StaticData.contacts
@@ -96,6 +99,7 @@ final class AppState: ObservableObject {
                 if let remote = try await repo.fetchUser(uid: uid) {
                     profile = remote.profile
                     selectedGotoIds = Set(remote.profile.gotoIds)
+                    pendingGotoIds = Set(remote.profile.pendingGotoIds)
                     favoriteBusinessIds = Set(remote.profile.favoriteBusinessIds)
                     hasCompletedOnboarding = remote.hasCompletedOnboarding
                     collections = try await repo.fetchCollections(ownerId: uid)
@@ -120,6 +124,10 @@ final class AppState: ObservableObject {
         contacts.filter { selectedGotoIds.contains($0.id) }
     }
 
+    var pendingGotos: [ContactPerson] {
+        contacts.filter { pendingGotoIds.contains($0.id) }
+    }
+
     var favoriteBusinesses: [Business] {
         businesses.filter { favoriteBusinessIds.contains($0.id) }
     }
@@ -127,11 +135,24 @@ final class AppState: ObservableObject {
     var isCloudEnabled: Bool { FirebaseBootstrap.isConfigured }
 
     var selectableGotos: [ContactPerson] {
-        contacts.filter(\.isOnHeyEcho)
+        contacts.filter { $0.isOnHeyEcho && !$0.isLocalExpert }
     }
 
     var inviteLaterContacts: [ContactPerson] {
         contacts.filter { !$0.isOnHeyEcho }
+    }
+
+    /// Local experts suggested when the personal trust graph is thin (SOW Phase 1).
+    var localExpertSuggestions: [ContactPerson] {
+        contacts.filter(\.isLocalExpert)
+    }
+
+    var needsThinNetworkFallback: Bool {
+        (personalGotos.count + pendingGotos.count) < 2
+    }
+
+    var activeGotoCount: Int {
+        selectedGotoIds.count + pendingGotoIds.count
     }
 
     /// Cities from remote config ∪ whatever cities exist in the live business directory.
@@ -141,6 +162,7 @@ final class AppState: ObservableObject {
 
     func completeOnboarding() {
         profile.gotoIds = Array(selectedGotoIds)
+        profile.pendingGotoIds = Array(pendingGotoIds)
         profile.favoriteBusinessIds = Array(favoriteBusinessIds)
         syncCollectionIds()
         hasCompletedOnboarding = true
@@ -160,16 +182,81 @@ final class AppState: ObservableObject {
         }
         if selectedGotoIds.contains(id) {
             selectedGotoIds.remove(id)
-        } else if selectedGotoIds.count < 5 {
+        } else if activeGotoCount < 5 {
             selectedGotoIds.insert(id)
+            pendingGotoIds.remove(id)
         }
         profile.gotoIds = Array(selectedGotoIds)
+        profile.pendingGotoIds = Array(pendingGotoIds)
         Task { await persist() }
+    }
+
+    func togglePendingGoto(_ id: String) {
+        guard contacts.contains(where: { $0.id == id && !$0.isOnHeyEcho }) || pendingGotoIds.contains(id) else {
+            return
+        }
+        if pendingGotoIds.contains(id) {
+            pendingGotoIds.remove(id)
+        } else if activeGotoCount < 5 {
+            pendingGotoIds.insert(id)
+            selectedGotoIds.remove(id)
+        }
+        profile.gotoIds = Array(selectedGotoIds)
+        profile.pendingGotoIds = Array(pendingGotoIds)
+        Task { await persist() }
+    }
+
+    func inviteMessage(for contact: ContactPerson) -> String {
+        let sender = profile.name.isEmpty ? "A friend" : profile.name
+        return """
+        \(sender) added you as a food GoTo on HeyEcho — trusted local food discovery.
+        Join HeyEcho and help friends find places they'll actually love.
+        """
     }
 
     func updateKnownFor(_ tags: [String]) {
         profile.knownFor = tags
         Task { await persist() }
+    }
+
+    func tips(for businessId: String) -> [Tip] {
+        tipsByBusinessId[businessId] ?? []
+    }
+
+    func loadTips(for businessId: String) async {
+        guard isCloudEnabled else { return }
+        do {
+            tipsByBusinessId[businessId] = try await repo.fetchTips(businessId: businessId)
+        } catch {
+            #if DEBUG
+            print("[HeyEcho] tips load: \(error.localizedDescription)")
+            #endif
+        }
+    }
+
+    func addTip(businessId: String, text: String) async {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        let tip = Tip(
+            id: UUID().uuidString,
+            businessId: businessId,
+            authorId: profile.id,
+            authorName: profile.name.isEmpty ? "You" : profile.name,
+            text: trimmed,
+            createdAt: Date().timeIntervalSince1970
+        )
+        var list = tipsByBusinessId[businessId] ?? []
+        list.insert(tip, at: 0)
+        tipsByBusinessId[businessId] = list
+        guard isCloudEnabled, let uid = auth.userId ?? (profile.id != "me" ? profile.id : nil) else { return }
+        var toSave = tip
+        toSave.authorId = uid
+        do {
+            try await repo.saveTip(toSave)
+            tipsByBusinessId[businessId] = try await repo.fetchTips(businessId: businessId)
+        } catch {
+            authError = error.localizedDescription
+        }
     }
 
     func toggleFavorite(_ businessId: String) {
@@ -363,12 +450,15 @@ final class AppState: ObservableObject {
             foodCity: StaticData.defaultFoodCity,
             knownFor: [],
             gotoIds: [],
+            pendingGotoIds: [],
             favoriteBusinessIds: [],
             collectionIds: []
         )
         collections = StaticData.sampleCollections
         directoryContacts = StaticData.contacts
         contacts = StaticData.contacts
+        selectedGotoIds = []
+        pendingGotoIds = []
         persistLocalCache()
     }
 
@@ -386,6 +476,7 @@ final class AppState: ObservableObject {
             var toSave = profile
             toSave.id = uid
             toSave.gotoIds = Array(selectedGotoIds)
+            toSave.pendingGotoIds = Array(pendingGotoIds)
             toSave.favoriteBusinessIds = Array(favoriteBusinessIds)
             toSave.collectionIds = collections.map(\.id)
             profile = toSave
@@ -435,6 +526,7 @@ final class AppState: ObservableObject {
                 foodCity: StaticData.defaultFoodCity,
                 knownFor: [],
                 gotoIds: [],
+                pendingGotoIds: [],
                 favoriteBusinessIds: [],
                 collectionIds: []
             )

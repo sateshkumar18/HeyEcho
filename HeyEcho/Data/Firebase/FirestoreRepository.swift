@@ -127,6 +127,22 @@ final class FirestoreRepository {
         data["ownerId"] = ownerId
         try await db.collection("collections").document(collection.id).setData(data, merge: true)
     }
+
+    // MARK: - Tips
+
+    func fetchTips(businessId: String) async throws -> [Tip] {
+        let db = try requireDB()
+        let snap = try await db.collection("tips")
+            .whereField("businessId", isEqualTo: businessId)
+            .getDocuments()
+        return snap.documents.compactMap { Tip.fromFirestore($0.data(), id: $0.documentID) }
+            .sorted { $0.createdAt > $1.createdAt }
+    }
+
+    func saveTip(_ tip: Tip) async throws {
+        let db = try requireDB()
+        try await db.collection("tips").document(tip.id).setData(tip.firestoreData, merge: true)
+    }
 }
 
 // MARK: - Firestore mapping
@@ -139,6 +155,7 @@ extension UserProfile {
             "foodCity": foodCity,
             "knownFor": knownFor,
             "gotoIds": gotoIds,
+            "pendingGotoIds": pendingGotoIds,
             "favoriteBusinessIds": favoriteBusinessIds,
             "collectionIds": collectionIds
         ]
@@ -152,6 +169,7 @@ extension UserProfile {
             foodCity: data["foodCity"] as? String ?? StaticData.defaultFoodCity,
             knownFor: data["knownFor"] as? [String] ?? [],
             gotoIds: data["gotoIds"] as? [String] ?? [],
+            pendingGotoIds: data["pendingGotoIds"] as? [String] ?? [],
             favoriteBusinessIds: data["favoriteBusinessIds"] as? [String] ?? [],
             collectionIds: data["collectionIds"] as? [String] ?? []
         )
@@ -254,6 +272,31 @@ extension AppRemoteConfig {
             gotoWeight: data["gotoWeight"] as? Int ?? fallback.gotoWeight,
             cityBoost: data["cityBoost"] as? Int ?? fallback.cityBoost,
             defaultFoodCity: data["defaultFoodCity"] as? String ?? fallback.defaultFoodCity
+        )
+    }
+}
+
+extension Tip {
+    var firestoreData: [String: Any] {
+        [
+            "businessId": businessId,
+            "authorId": authorId,
+            "authorName": authorName,
+            "text": text,
+            "createdAt": createdAt
+        ]
+    }
+
+    static func fromFirestore(_ data: [String: Any], id: String) -> Tip? {
+        guard let businessId = data["businessId"] as? String,
+              let text = data["text"] as? String else { return nil }
+        return Tip(
+            id: id,
+            businessId: businessId,
+            authorId: data["authorId"] as? String ?? "",
+            authorName: data["authorName"] as? String ?? "Someone",
+            text: text,
+            createdAt: data["createdAt"] as? TimeInterval ?? Date().timeIntervalSince1970
         )
     }
 }

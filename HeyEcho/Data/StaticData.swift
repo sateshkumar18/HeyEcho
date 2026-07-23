@@ -16,7 +16,8 @@ enum StaticData {
         "South Indian", "North Indian", "Biryani", "Street Food",
         "Cafe & Coffee", "Chinese", "Seafood", "Desserts",
         "Healthy / Bowls", "Pizza & Pasta", "Chaat", "Filter Coffee",
-        "Cloud Kitchens", "Late-Night Food", "Cheap Eats", "Kebabs & Rolls"
+        "Cloud Kitchens", "Late-Night Food", "Cheap Eats", "Kebabs & Rolls",
+        "Hotels", "Fine Dining"
     ]
 
     static let categories: [FoodCategory] = [
@@ -26,9 +27,9 @@ enum StaticData {
         .init(id: "c4", name: "Cafe & Coffee", subtitle: "Work-friendly spots", symbol: "cup.and.saucer.fill"),
         .init(id: "c5", name: "North Indian", subtitle: "Tandoor, thali, gravy", symbol: "fork.knife"),
         .init(id: "c6", name: "Desserts", subtitle: "Ice cream, mithai, cakes", symbol: "birthday.cake.fill"),
-        .init(id: "c7", name: "Cloud Kitchens", subtitle: "Delivery-first kitchens", symbol: "bicycle"),
-        .init(id: "c8", name: "Kebabs & Rolls", subtitle: "Shawarma, kebabs, wraps", symbol: "flame"),
-        .init(id: "c9", name: "Cheap Eats", subtitle: "Budget-friendly locals", symbol: "indianrupeesign.circle"),
+        .init(id: "c7", name: "Hotels", subtitle: "Stays & hotel dining", symbol: "building.2.fill"),
+        .init(id: "c8", name: "Cloud Kitchens", subtitle: "Delivery-first kitchens", symbol: "bicycle"),
+        .init(id: "c9", name: "Kebabs & Rolls", subtitle: "Shawarma, kebabs, wraps", symbol: "flame"),
         .init(id: "c10", name: "Late-Night Food", subtitle: "Open after 10 PM", symbol: "moon.stars.fill")
     ]
 

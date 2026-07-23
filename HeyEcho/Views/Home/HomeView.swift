@@ -20,10 +20,14 @@ struct HomeView: View {
                         .opacity(appeared ? 1 : 0)
                         .offset(y: appeared ? 0 : 16)
 
+                    if appState.needsThinNetworkFallback {
+                        thinNetworkCard
+                    }
+
                     VStack(alignment: .leading, spacing: 4) {
                         SectionHeader(
                             title: "Recommended for you",
-                            subtitle: "Ranked by your Personal GoTo's"
+                            subtitle: "Ranked by voices you trust"
                         )
 
                         if recommendations.isEmpty {
@@ -94,14 +98,16 @@ struct HomeView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 18) {
                     ForEach(appState.personalGotos) { contact in
-                        VStack(spacing: 10) {
-                            AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 60)
-                            Text(contact.name.split(separator: " ").first.map(String.init) ?? contact.name)
-                                .font(.caption.weight(.medium))
-                                .foregroundStyle(AppTheme.ink)
-                                .lineLimit(1)
-                        }
-                        .frame(width: 76)
+                        gotoAvatar(contact, badge: nil)
+                    }
+                    ForEach(appState.pendingGotos) { contact in
+                        gotoAvatar(contact, badge: "Pending")
+                    }
+                    if appState.personalGotos.isEmpty && appState.pendingGotos.isEmpty {
+                        Text("Add GoTo's to personalize recommendations")
+                            .font(.subheadline)
+                            .foregroundStyle(AppTheme.muted)
+                            .padding(.vertical, 20)
                     }
                 }
                 .padding(.vertical, 2)
@@ -109,11 +115,72 @@ struct HomeView: View {
         }
     }
 
+    private func gotoAvatar(_ contact: ContactPerson, badge: String?) -> some View {
+        VStack(spacing: 10) {
+            ZStack(alignment: .topTrailing) {
+                AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 60)
+                if badge != nil {
+                    Circle()
+                        .fill(AppTheme.accent)
+                        .frame(width: 12, height: 12)
+                        .offset(x: 2, y: -2)
+                }
+            }
+            Text(contact.name.split(separator: " ").first.map(String.init) ?? contact.name)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(AppTheme.ink)
+                .lineLimit(1)
+            if let badge {
+                Text(badge)
+                    .font(.caption2)
+                    .foregroundStyle(AppTheme.muted)
+            }
+        }
+        .frame(width: 76)
+    }
+
+    private var thinNetworkCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Grow your trust circle")
+                .font(.headline)
+            Text("Follow local experts until more of your friends join HeyEcho.")
+                .font(.subheadline)
+                .foregroundStyle(AppTheme.muted)
+            ForEach(appState.localExpertSuggestions.prefix(3)) { expert in
+                let selected = appState.selectedGotoIds.contains(expert.id)
+                Button {
+                    appState.toggleGoto(expert.id)
+                } label: {
+                    HStack(spacing: 12) {
+                        AvatarCircle(name: expert.name, hue: expert.avatarHue, size: 40)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(expert.name)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(AppTheme.ink)
+                            Text(expert.knownFor.prefix(2).joined(separator: " · "))
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.muted)
+                        }
+                        Spacer()
+                        Text(selected ? "Following" : "Follow")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(selected ? AppTheme.muted : AppTheme.brand)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppTheme.brand.opacity(0.06))
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("No trust matches yet")
                 .font(.headline)
-            Text("Pick more GoTo's or browse categories to discover places.")
+            Text("Follow a GoTo or browse restaurants and hotels to discover places.")
                 .font(.subheadline)
                 .foregroundStyle(AppTheme.muted)
         }

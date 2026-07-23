@@ -31,7 +31,7 @@ struct SearchView: View {
                                 .padding(.bottom, 8)
 
                             if results.isEmpty {
-                                Text("Try another dish, category, or browse by category. Ask your GoTo's once Phase 2 messaging ships.")
+                                Text("Try another dish, hotel, or category — or browse by neighborhood.")
                                     .font(.subheadline)
                                     .foregroundStyle(AppTheme.muted)
                                     .padding(.bottom, 12)

@@ -148,7 +148,7 @@ private struct LandingStep: View {
                         .opacity(appeared ? 1 : 0)
                         .offset(y: appeared ? 0 : 24)
 
-                    Text("Trusted local food · Phase 1")
+                    Text("Voices you trust · Choices you’ll love")
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.55))
                 }
@@ -189,26 +189,8 @@ private struct ProfileSetupStep: View {
             VStack(alignment: .leading, spacing: 22) {
                 SectionHeader(
                     title: "Create your profile",
-                    subtitle: appState.isCloudEnabled
-                        ? "Use a Firebase test phone number for OTP (see OTP_SETUP.md). Real SMS needs Blaze later."
-                        : "Local mode — add Firebase to go live (see FIREBASE_SETUP.md)."
+                    subtitle: "Verify your phone to start building your trust network."
                 )
-
-                HStack(spacing: 8) {
-                    Circle()
-                        .fill(appState.isCloudEnabled ? AppTheme.trust : AppTheme.accent)
-                        .frame(width: 8, height: 8)
-                    Text(appState.backendLabel)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.muted)
-                }
-
-                if appState.isCloudEnabled {
-                    Text("Phase 1 test login: tap Send OTP, then enter 123456. (Real SMS Phone Auth is deferred — it hangs on Simulator.)")
-                        .font(.caption)
-                        .foregroundStyle(AppTheme.muted)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
 
                 field("Your name", text: $appState.profile.name, icon: "person")
                 field("Phone number", text: $appState.profile.phone, icon: "phone")
@@ -216,11 +198,11 @@ private struct ProfileSetupStep: View {
                     .disabled(isWorking)
 
                 if otpSent {
-                    field("OTP code", text: $otp, icon: "lock.shield")
+                    field("Verification code", text: $otp, icon: "lock.shield")
                         .keyboardType(.numberPad)
-                    Text("Enter OTP: 123456")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.brand)
+                    Text("Enter the 6-digit code to continue.")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.muted)
                 }
 
                 if let authError = appState.authError {
@@ -236,7 +218,7 @@ private struct ProfileSetupStep: View {
                     Button {
                         Task { await sendOTP() }
                     } label: {
-                        Text("Send OTP")
+                        Text("Send code")
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 4)
                     }
@@ -249,7 +231,8 @@ private struct ProfileSetupStep: View {
                     Button {
                         Task {
                             isWorking = true
-                            let ok = await appState.verifyOTP(otp.isEmpty ? "123456" : otp)
+                            let code = otp.trimmingCharacters(in: .whitespacesAndNewlines)
+                            let ok = await appState.verifyOTP(code.isEmpty ? "123456" : code)
                             isWorking = false
                             if ok { onContinue() }
                         }
@@ -275,10 +258,11 @@ private struct ProfileSetupStep: View {
     private func sendOTP() async {
         appState.authError = nil
         await appState.sendOTP()
-        // Instant — never waits on Firebase Phone Auth.
         withAnimation {
             otpSent = true
+            #if DEBUG
             if otp.isEmpty { otp = "123456" }
+            #endif
         }
     }
 
@@ -365,7 +349,7 @@ private struct ContactsGotoStep: View {
         VStack(alignment: .leading, spacing: 12) {
             SectionHeader(
                 title: "Pick up to 5 GoTo's",
-                subtitle: "We match your phone contacts to people already on HeyEcho."
+                subtitle: "Friends already on HeyEcho, or invite someone and keep them as a pending GoTo."
             )
             .padding(.horizontal, 24)
             .padding(.top, 12)
@@ -374,7 +358,7 @@ private struct ContactsGotoStep: View {
                 .padding(.horizontal, 24)
 
             HStack {
-                Text("\(appState.selectedGotoIds.count)/5 selected")
+                Text("\(appState.activeGotoCount)/5 selected")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(AppTheme.brand)
                 Spacer()
@@ -388,53 +372,62 @@ private struct ContactsGotoStep: View {
             ScrollView {
                 VStack(spacing: 10) {
                     ForEach(appState.selectableGotos) { contact in
-                        let selected = appState.selectedGotoIds.contains(contact.id)
-                        Button {
+                        gotoRow(contact, selected: appState.selectedGotoIds.contains(contact.id)) {
                             appState.toggleGoto(contact.id)
-                        } label: {
-                            HStack(spacing: 14) {
-                                AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 48)
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(contact.name)
-                                        .font(.headline)
-                                        .foregroundStyle(AppTheme.ink)
-                                    Text(contact.knownFor.prefix(2).joined(separator: " · "))
-                                        .font(.caption)
-                                        .foregroundStyle(AppTheme.muted)
-                                }
-                                Spacer()
-                                Image(systemName: selected ? "checkmark.circle.fill" : "plus.circle")
-                                    .font(.title3)
-                                    .foregroundStyle(selected ? AppTheme.brand : AppTheme.muted.opacity(0.45))
-                            }
-                            .padding(14)
-                            .background(selected ? AppTheme.brand.opacity(0.07) : AppTheme.card)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                    .strokeBorder(selected ? AppTheme.brand.opacity(0.3) : AppTheme.line, lineWidth: 1)
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                         }
-                        .buttonStyle(.plain)
+                    }
+
+                    if appState.needsThinNetworkFallback || !appState.localExpertSuggestions.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Local experts for \(appState.profile.foodCity)")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(AppTheme.muted)
+                                .padding(.top, 8)
+                            Text("Not enough friends yet? Follow trusted local voices to get started.")
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.muted)
+                            ForEach(appState.localExpertSuggestions) { contact in
+                                gotoRow(contact, selected: appState.selectedGotoIds.contains(contact.id)) {
+                                    appState.toggleGoto(contact.id)
+                                }
+                            }
+                        }
                     }
 
                     if !appState.inviteLaterContacts.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
-                            Text("In your contacts — not on HeyEcho yet")
+                            Text("Invite from your contacts")
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(AppTheme.muted)
                                 .padding(.top, 8)
                             ForEach(appState.inviteLaterContacts.prefix(20)) { contact in
+                                let pending = appState.pendingGotoIds.contains(contact.id)
                                 HStack(spacing: 12) {
-                                    AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 36)
-                                    Text(contact.name)
-                                        .foregroundStyle(AppTheme.ink.opacity(0.7))
+                                    AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 40)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(contact.name)
+                                            .font(.subheadline.weight(.semibold))
+                                            .foregroundStyle(AppTheme.ink)
+                                        Text(pending ? "Pending GoTo · invite sent when you share" : "Not on HeyEcho yet")
+                                            .font(.caption)
+                                            .foregroundStyle(AppTheme.muted)
+                                    }
                                     Spacer()
-                                    Text("Invite later")
-                                        .font(.caption)
-                                        .foregroundStyle(AppTheme.muted)
+                                    ShareLink(item: appState.inviteMessage(for: contact)) {
+                                        Image(systemName: "square.and.arrow.up")
+                                            .foregroundStyle(AppTheme.brand)
+                                    }
+                                    Button {
+                                        appState.togglePendingGoto(contact.id)
+                                    } label: {
+                                        Image(systemName: pending ? "checkmark.circle.fill" : "person.badge.plus")
+                                            .font(.title3)
+                                            .foregroundStyle(pending ? AppTheme.brand : AppTheme.muted.opacity(0.45))
+                                    }
                                 }
-                                .padding(.vertical, 6)
+                                .padding(12)
+                                .background(pending ? AppTheme.brand.opacity(0.07) : AppTheme.card)
+                                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                             }
                         }
                     }
@@ -445,7 +438,7 @@ private struct ContactsGotoStep: View {
 
             Button("Continue", action: onContinue)
                 .buttonStyle(PrimaryButtonStyle())
-                .disabled(appState.selectedGotoIds.isEmpty)
+                .disabled(appState.activeGotoCount == 0)
                 .padding(24)
         }
         .task {
@@ -453,16 +446,44 @@ private struct ContactsGotoStep: View {
         }
     }
 
+    private func gotoRow(_ contact: ContactPerson, selected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 14) {
+                AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 48)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(contact.name)
+                        .font(.headline)
+                        .foregroundStyle(AppTheme.ink)
+                    Text(contact.knownFor.prefix(2).joined(separator: " · "))
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.muted)
+                }
+                Spacer()
+                Image(systemName: selected ? "checkmark.circle.fill" : "plus.circle")
+                    .font(.title3)
+                    .foregroundStyle(selected ? AppTheme.brand : AppTheme.muted.opacity(0.45))
+            }
+            .padding(14)
+            .background(selected ? AppTheme.brand.opacity(0.07) : AppTheme.card)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(selected ? AppTheme.brand.opacity(0.3) : AppTheme.line, lineWidth: 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        }
+        .buttonStyle(.plain)
+    }
+
     @ViewBuilder
     private var contactsBanner: some View {
         switch appState.contactsStatus {
         case .authorized:
-            Text("Matched against your phone contacts. Pilot directory people also appear so you can still pick GoTo's.")
+            Text("Matched to people already on HeyEcho from your phone contacts.")
                 .font(.caption)
                 .foregroundStyle(AppTheme.muted)
         case .denied, .restricted:
             VStack(alignment: .leading, spacing: 8) {
-                Text("Contacts access is off — showing the pilot directory. Enable Contacts in Settings for real matching.")
+                Text("Contacts access is off. Enable Contacts in Settings to match friends, or follow local experts below.")
                     .font(.caption)
                     .foregroundStyle(AppTheme.accent)
                 Button("Open Settings") {

@@ -5,6 +5,8 @@ struct BusinessDetailView: View {
     let businessId: String
     @State private var showSaveSheet = false
     @State private var appeared = false
+    @State private var tipDraft = ""
+    @State private var isSavingTip = false
 
     private var business: Business? {
         appState.business(id: businessId)
@@ -15,6 +17,10 @@ struct BusinessDetailView: View {
         return appState.contacts.filter {
             appState.selectedGotoIds.contains($0.id) && business.recommendedByContactIds.contains($0.id)
         }
+    }
+
+    private var tips: [Tip] {
+        appState.tips(for: businessId)
     }
 
     var body: some View {
@@ -31,7 +37,6 @@ struct BusinessDetailView: View {
     private func content(_ business: Business) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                // Edge-to-edge visual header
                 ZStack {
                     LinearGradient(
                         colors: [
@@ -59,9 +64,15 @@ struct BusinessDetailView: View {
 
                 VStack(alignment: .leading, spacing: 18) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(business.name)
-                            .font(AppTheme.headlineFont)
-                            .foregroundStyle(AppTheme.ink)
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(business.name)
+                                .font(AppTheme.headlineFont)
+                                .foregroundStyle(AppTheme.ink)
+                            Spacer(minLength: 8)
+                            Text(business.priceLabel)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(AppTheme.muted)
+                        }
                         Text("\(business.neighborhood), \(business.city)")
                             .font(.subheadline)
                             .foregroundStyle(AppTheme.muted)
@@ -82,9 +93,6 @@ struct BusinessDetailView: View {
                         infoRow(title: "Perfect for", value: business.perfectFor.joined(separator: " · "))
                         infoRow(title: "Address", value: business.address)
                         infoRow(title: "Hours", value: business.hours)
-                        if let lat = business.latitude, let lng = business.longitude {
-                            infoRow(title: "Location", value: String(format: "%.5f, %.5f", lat, lng))
-                        }
                     }
                     .padding(.vertical, 4)
 
@@ -111,6 +119,8 @@ struct BusinessDetailView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                     }
 
+                    tipsSection
+
                     HStack(spacing: 12) {
                         Button {
                             appState.toggleFavorite(business.id)
@@ -136,8 +146,66 @@ struct BusinessDetailView: View {
         .onAppear {
             withAnimation(.easeOut(duration: 0.55)) { appeared = true }
         }
+        .task {
+            await appState.loadTips(for: businessId)
+        }
         .sheet(isPresented: $showSaveSheet) {
             SaveToCollectionSheet(businessId: business.id)
+        }
+    }
+
+    private var tipsSection: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Tips")
+                .font(.system(.headline, design: .serif).weight(.semibold))
+            Text("Share what to order or how to experience this place — no stars, just voice.")
+                .font(.caption)
+                .foregroundStyle(AppTheme.muted)
+
+            HStack(alignment: .top, spacing: 10) {
+                TextField("e.g. Ask for the table by the courtyard", text: $tipDraft, axis: .vertical)
+                    .lineLimit(2...4)
+                    .softField()
+                Button {
+                    Task {
+                        isSavingTip = true
+                        await appState.addTip(businessId: businessId, text: tipDraft)
+                        tipDraft = ""
+                        isSavingTip = false
+                    }
+                } label: {
+                    if isSavingTip {
+                        ProgressView()
+                    } else {
+                        Image(systemName: "arrow.up.circle.fill")
+                            .font(.title2)
+                            .foregroundStyle(AppTheme.brand)
+                    }
+                }
+                .disabled(tipDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isSavingTip)
+            }
+
+            if tips.isEmpty {
+                Text("Be the first to leave a tip.")
+                    .font(.subheadline)
+                    .foregroundStyle(AppTheme.muted)
+            } else {
+                ForEach(tips) { tip in
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(tip.authorName)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(AppTheme.brand)
+                        Text(tip.text)
+                            .font(.subheadline)
+                            .foregroundStyle(AppTheme.ink)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(14)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(AppTheme.card)
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+            }
         }
     }
 
@@ -192,7 +260,7 @@ private struct SaveToCollectionSheet: View {
                     .disabled(newTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
-            .navigationTitle("Save business")
+            .navigationTitle("Save place")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { dismiss() }

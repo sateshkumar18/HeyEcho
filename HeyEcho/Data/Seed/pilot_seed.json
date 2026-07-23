@@ -125,6 +125,42 @@
         "Late-Night Food"
       ],
       "avatarHue": 0.61
+    },
+    {
+      "id": "cgoto1",
+      "name": "Bangalore Food Guru",
+      "phone": "+919800020001",
+      "isOnHeyEcho": true,
+      "knownFor": [
+        "Street Food",
+        "Biryani",
+        "Late-Night Food"
+      ],
+      "avatarHue": 0.18
+    },
+    {
+      "id": "cgoto2",
+      "name": "Indiranagar Eats",
+      "phone": "+919800020002",
+      "isOnHeyEcho": true,
+      "knownFor": [
+        "Cafe & Coffee",
+        "Healthy / Bowls",
+        "Desserts"
+      ],
+      "avatarHue": 0.72
+    },
+    {
+      "id": "cgoto3",
+      "name": "South Bengaluru Bites",
+      "phone": "+919800020003",
+      "isOnHeyEcho": true,
+      "knownFor": [
+        "South Indian",
+        "Filter Coffee",
+        "Cheap Eats"
+      ],
+      "avatarHue": 0.41
     }
   ],
   "businesses": [
@@ -2612,6 +2648,1258 @@
       "hours": "9:00 AM \u2013 10:00 PM",
       "latitude": 12.9115,
       "longitude": 77.6475
+    },
+    {
+      "id": "h001",
+      "name": "The Oberoi, Bengaluru",
+      "neighborhood": "MG Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Fine Dining",
+        "Cafe & Coffee"
+      ],
+      "shortDescription": "Luxury hotel on MG Road with refined dining and afternoon tea.",
+      "priceLevel": 4,
+      "perfectFor": [
+        "Special occasion",
+        "Business stay"
+      ],
+      "recommendedByContactIds": [
+        "u3",
+        "u6"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "37-39 Mahatma Gandhi Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.9734,
+      "longitude": 77.6182
+    },
+    {
+      "id": "h002",
+      "name": "Taj West End",
+      "neighborhood": "Race Course Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Fine Dining",
+        "South Indian"
+      ],
+      "shortDescription": "Heritage Taj property with garden dining and classic Bengaluru hospitality.",
+      "priceLevel": 4,
+      "perfectFor": [
+        "Special occasion",
+        "Staycation"
+      ],
+      "recommendedByContactIds": [
+        "u1",
+        "u2"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "Race Course Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.9845,
+      "longitude": 77.584
+    },
+    {
+      "id": "h003",
+      "name": "ITC Gardenia",
+      "neighborhood": "Residency Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Fine Dining",
+        "North Indian"
+      ],
+      "shortDescription": "Luxury ITC hotel known for responsible luxury and acclaimed restaurants.",
+      "priceLevel": 4,
+      "perfectFor": [
+        "Business stay",
+        "Fine dining"
+      ],
+      "recommendedByContactIds": [
+        "u2",
+        "u6"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "1 Residency Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.9678,
+      "longitude": 77.5955
+    },
+    {
+      "id": "h004",
+      "name": "Shangri-La Bengaluru",
+      "neighborhood": "Palace Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Fine Dining",
+        "Cafe & Coffee"
+      ],
+      "shortDescription": "Five-star hotel with multiple restaurants and skyline views.",
+      "priceLevel": 4,
+      "perfectFor": [
+        "Special occasion",
+        "Business"
+      ],
+      "recommendedByContactIds": [
+        "u3",
+        "u9"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "Palace Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.991,
+      "longitude": 77.5875
+    },
+    {
+      "id": "h005",
+      "name": "The Ritz-Carlton, Bangalore",
+      "neighborhood": "Residency Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Fine Dining",
+        "Cafe & Coffee"
+      ],
+      "shortDescription": "Contemporary luxury hotel with polished dining rooms and lounges.",
+      "priceLevel": 4,
+      "perfectFor": [
+        "Date night",
+        "Business stay"
+      ],
+      "recommendedByContactIds": [
+        "u5",
+        "u9"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "99 Residency Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.9672,
+      "longitude": 77.5968
+    },
+    {
+      "id": "h006",
+      "name": "JW Marriott Hotel Bengaluru",
+      "neighborhood": "Vittal Mallya Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Fine Dining",
+        "Cafe & Coffee"
+      ],
+      "shortDescription": "Premium Marriott stay with multiple restaurants near UB City.",
+      "priceLevel": 4,
+      "perfectFor": [
+        "Business stay",
+        "Celebrations"
+      ],
+      "recommendedByContactIds": [
+        "u2",
+        "u3"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "24/1 Vittal Mallya Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.9718,
+      "longitude": 77.596
+    },
+    {
+      "id": "h007",
+      "name": "Conrad Bengaluru",
+      "neighborhood": "Ulsoor",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Fine Dining",
+        "Cafe & Coffee"
+      ],
+      "shortDescription": "Modern Hilton luxury hotel overlooking Ulsoor Lake.",
+      "priceLevel": 4,
+      "perfectFor": [
+        "Business stay",
+        "Weekend"
+      ],
+      "recommendedByContactIds": [
+        "u3",
+        "u6"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "25/3 Kensington Road, Ulsoor",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.983,
+      "longitude": 77.6285
+    },
+    {
+      "id": "h008",
+      "name": "Four Seasons Hotel Bengaluru",
+      "neighborhood": "Halasuru",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Fine Dining"
+      ],
+      "shortDescription": "Four Seasons tower dining and elevated city stays.",
+      "priceLevel": 4,
+      "perfectFor": [
+        "Special occasion"
+      ],
+      "recommendedByContactIds": [
+        "u6",
+        "u5"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "67/1 Halasuru Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.9765,
+      "longitude": 77.6255
+    },
+    {
+      "id": "h009",
+      "name": "Taj MG Road Bengaluru",
+      "neighborhood": "MG Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Cafe & Coffee",
+        "North Indian"
+      ],
+      "shortDescription": "Convenient Taj hotel on MG Road for city stays and meetings.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Business stay",
+        "Meetings"
+      ],
+      "recommendedByContactIds": [
+        "u2",
+        "u3"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "41/3 Mahatma Gandhi Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.9748,
+      "longitude": 77.6095
+    },
+    {
+      "id": "h010",
+      "name": "The Leela Palace Bengaluru",
+      "neighborhood": "Old Airport Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Fine Dining",
+        "South Indian"
+      ],
+      "shortDescription": "Palace-style luxury hotel with grand dining experiences.",
+      "priceLevel": 4,
+      "perfectFor": [
+        "Special occasion",
+        "Staycation"
+      ],
+      "recommendedByContactIds": [
+        "u1",
+        "u5"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "23 Old Airport Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.9605,
+      "longitude": 77.6485
+    },
+    {
+      "id": "h011",
+      "name": "Radisson Blu Atria Bengaluru",
+      "neighborhood": "Palace Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Cafe & Coffee",
+        "North Indian"
+      ],
+      "shortDescription": "Upscale business hotel with all-day dining near central Bengaluru.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Business stay"
+      ],
+      "recommendedByContactIds": [
+        "u2"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "1 Palace Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.9875,
+      "longitude": 77.585
+    },
+    {
+      "id": "h012",
+      "name": "Holiday Inn Bengaluru Racecourse",
+      "neighborhood": "Yeshwanthpur",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Cafe & Coffee"
+      ],
+      "shortDescription": "Reliable full-service hotel near the racecourse belt.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Business travel"
+      ],
+      "recommendedByContactIds": [
+        "u3"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "Racecourse Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.986,
+      "longitude": 77.5735
+    },
+    {
+      "id": "h013",
+      "name": "ibis Bengaluru City Centre",
+      "neighborhood": "Richmond Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Cafe & Coffee",
+        "Cheap Eats"
+      ],
+      "shortDescription": "Practical city hotel for short stays and coffee meetings.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Budget stay",
+        "Quick trips"
+      ],
+      "recommendedByContactIds": [
+        "u9",
+        "u4"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "Richmond Road",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.9665,
+      "longitude": 77.5995
+    },
+    {
+      "id": "h014",
+      "name": "Treebo Trend Hotel",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Cheap Eats"
+      ],
+      "shortDescription": "Mid-range Indiranagar stay close to restaurants and cafes.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Short stay",
+        "Local base"
+      ],
+      "recommendedByContactIds": [
+        "u4",
+        "u9"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "Indiranagar",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.9785,
+      "longitude": 77.64
+    },
+    {
+      "id": "h015",
+      "name": "Keys Select Hotel Hosur Road",
+      "neighborhood": "Koramangala",
+      "city": "Bengaluru",
+      "categories": [
+        "Hotels",
+        "Cafe & Coffee"
+      ],
+      "shortDescription": "Business-friendly hotel near Koramangala and Hosur Road.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Business travel"
+      ],
+      "recommendedByContactIds": [
+        "u2",
+        "u3"
+      ],
+      "imageSymbol": "building.2.fill",
+      "address": "Hosur Road / Koramangala",
+      "hours": "Open 24 hours (hotel)",
+      "latitude": 12.935,
+      "longitude": 77.618
+    },
+    {
+      "id": "r101",
+      "name": "Smoke House Deli",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Cafe & Coffee",
+        "Pizza & Pasta"
+      ],
+      "shortDescription": "Comfort cafe plates, breakfast, and deli classics.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Brunch",
+        "Catch-ups"
+      ],
+      "recommendedByContactIds": [
+        "u3",
+        "u9"
+      ],
+      "imageSymbol": "cup.and.saucer.fill",
+      "address": "100 Feet Road, Indiranagar",
+      "hours": "9:00 AM \u2013 11:00 PM",
+      "latitude": 12.9782,
+      "longitude": 77.6411
+    },
+    {
+      "id": "r102",
+      "name": "Cafe Noir",
+      "neighborhood": "UB City",
+      "city": "Bengaluru",
+      "categories": [
+        "Cafe & Coffee",
+        "Pizza & Pasta",
+        "Desserts"
+      ],
+      "shortDescription": "European cafe dining at UB City.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Date night",
+        "Brunch"
+      ],
+      "recommendedByContactIds": [
+        "u5",
+        "u9"
+      ],
+      "imageSymbol": "cup.and.saucer.fill",
+      "address": "UB City, Vittal Mallya Road",
+      "hours": "10:00 AM \u2013 11:30 PM",
+      "latitude": 12.9716,
+      "longitude": 77.5958
+    },
+    {
+      "id": "r103",
+      "name": "Toast & Tonic",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Cafe & Coffee",
+        "Healthy / Bowls"
+      ],
+      "shortDescription": "Inventive small plates and cocktails in Indiranagar.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Date night",
+        "Friends"
+      ],
+      "recommendedByContactIds": [
+        "u3",
+        "u6"
+      ],
+      "imageSymbol": "fork.knife",
+      "address": "Indiranagar",
+      "hours": "12:00 \u2013 1:00 AM",
+      "latitude": 12.979,
+      "longitude": 77.6417
+    },
+    {
+      "id": "r104",
+      "name": "Communal",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Healthy / Bowls",
+        "Cafe & Coffee"
+      ],
+      "shortDescription": "Shared-table dining with seasonal plates.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Date night",
+        "Healthy dinner"
+      ],
+      "recommendedByContactIds": [
+        "u3"
+      ],
+      "imageSymbol": "leaf.circle.fill",
+      "address": "Indiranagar",
+      "hours": "12:00 \u2013 3:30 PM, 7:00 \u2013 11:00 PM",
+      "latitude": 12.9775,
+      "longitude": 77.642
+    },
+    {
+      "id": "r105",
+      "name": "Loft 38",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Cafe & Coffee",
+        "Pizza & Pasta"
+      ],
+      "shortDescription": "Rooftish hangout energy with pizzas and group tables.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Friends",
+        "Evening"
+      ],
+      "recommendedByContactIds": [
+        "u9",
+        "u12"
+      ],
+      "imageSymbol": "fork.knife",
+      "address": "Indiranagar",
+      "hours": "12:00 \u2013 1:00 AM",
+      "latitude": 12.9768,
+      "longitude": 77.6415
+    },
+    {
+      "id": "r106",
+      "name": "Plan B",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Cheap Eats",
+        "Late-Night Food",
+        "Kebabs & Rolls"
+      ],
+      "shortDescription": "Casual pub grub and late bites.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Friends",
+        "Late night"
+      ],
+      "recommendedByContactIds": [
+        "u12",
+        "u4"
+      ],
+      "imageSymbol": "moon.stars.fill",
+      "address": "Indiranagar",
+      "hours": "12:00 \u2013 1:00 AM",
+      "latitude": 12.9771,
+      "longitude": 77.6406
+    },
+    {
+      "id": "r107",
+      "name": "The Permit Room",
+      "neighborhood": "Lavelle Road",
+      "city": "Bengaluru",
+      "categories": [
+        "South Indian",
+        "Cafe & Coffee"
+      ],
+      "shortDescription": "Modern South Indian small plates and drinks.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Date night",
+        "Friends"
+      ],
+      "recommendedByContactIds": [
+        "u1",
+        "u3"
+      ],
+      "imageSymbol": "leaf.fill",
+      "address": "Lavelle Road",
+      "hours": "12:00 \u2013 1:00 AM",
+      "latitude": 12.9706,
+      "longitude": 77.5972
+    },
+    {
+      "id": "r108",
+      "name": "Nagarjuna Residency Road",
+      "neighborhood": "Residency Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Andhra",
+        "Biryani"
+      ],
+      "shortDescription": "Busy Andhra meals near central Bengaluru.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Lunch",
+        "Dinner"
+      ],
+      "recommendedByContactIds": [
+        "u2",
+        "u11"
+      ],
+      "imageSymbol": "flame.fill",
+      "address": "Residency Road",
+      "hours": "12:00 \u2013 3:30 PM, 7:00 \u2013 11:00 PM",
+      "latitude": 12.968,
+      "longitude": 77.5975
+    },
+    {
+      "id": "r109",
+      "name": "MTR Shantinagar",
+      "neighborhood": "Shantinagar",
+      "city": "Bengaluru",
+      "categories": [
+        "South Indian",
+        "Filter Coffee"
+      ],
+      "shortDescription": "Classic MTR meals closer to south-central Bengaluru.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Breakfast",
+        "Lunch"
+      ],
+      "recommendedByContactIds": [
+        "u1",
+        "u11"
+      ],
+      "imageSymbol": "leaf.fill",
+      "address": "Lalbagh Road area",
+      "hours": "6:30 AM \u2013 9:00 PM",
+      "latitude": 12.957,
+      "longitude": 77.591
+    },
+    {
+      "id": "r110",
+      "name": "Empire Church Street",
+      "neighborhood": "Church Street",
+      "city": "Bengaluru",
+      "categories": [
+        "Late-Night Food",
+        "Kebabs & Rolls",
+        "Biryani"
+      ],
+      "shortDescription": "Central late-night kebabs and biryani.",
+      "priceLevel": 1,
+      "perfectFor": [
+        "Late night",
+        "After movies"
+      ],
+      "recommendedByContactIds": [
+        "u12",
+        "u10"
+      ],
+      "imageSymbol": "moon.stars.fill",
+      "address": "Church Street",
+      "hours": "11:00 AM \u2013 1:00 AM",
+      "latitude": 12.9752,
+      "longitude": 77.6048
+    },
+    {
+      "id": "r111",
+      "name": "Truffles St Marks",
+      "neighborhood": "St. Marks Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Cafe & Coffee",
+        "Pizza & Pasta"
+      ],
+      "shortDescription": "Central Truffles for burgers and long waits.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Friends",
+        "Brunch"
+      ],
+      "recommendedByContactIds": [
+        "u9",
+        "u3"
+      ],
+      "imageSymbol": "fork.knife",
+      "address": "St. Marks Road",
+      "hours": "11:00 AM \u2013 11:30 PM",
+      "latitude": 12.9714,
+      "longitude": 77.6012
+    },
+    {
+      "id": "r112",
+      "name": "Corner House Brigade Road",
+      "neighborhood": "Brigade Road",
+      "city": "Bengaluru",
+      "categories": [
+        "Desserts"
+      ],
+      "shortDescription": "City-centre ice cream run after shopping.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Dessert"
+      ],
+      "recommendedByContactIds": [
+        "u5"
+      ],
+      "imageSymbol": "birthday.cake.fill",
+      "address": "Brigade Road",
+      "hours": "11:00 AM \u2013 11:30 PM",
+      "latitude": 12.9738,
+      "longitude": 77.6072
+    },
+    {
+      "id": "r113",
+      "name": "KFC Indiranagar",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Cheap Eats",
+        "Late-Night Food",
+        "Cloud Kitchens"
+      ],
+      "shortDescription": "Quick fried chicken for delivery and takeaway.",
+      "priceLevel": 1,
+      "perfectFor": [
+        "Quick dinner",
+        "Delivery"
+      ],
+      "recommendedByContactIds": [
+        "u4",
+        "u12"
+      ],
+      "imageSymbol": "bicycle",
+      "address": "Indiranagar",
+      "hours": "10:00 AM \u2013 12:00 AM",
+      "latitude": 12.9778,
+      "longitude": 77.6402
+    },
+    {
+      "id": "r114",
+      "name": "McDonald's Indiranagar",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Cheap Eats",
+        "Cafe & Coffee"
+      ],
+      "shortDescription": "Familiar burgers and coffee for quick stops.",
+      "priceLevel": 1,
+      "perfectFor": [
+        "Quick bite",
+        "Kids"
+      ],
+      "recommendedByContactIds": [
+        "u9"
+      ],
+      "imageSymbol": "fork.knife",
+      "address": "100 Feet Road, Indiranagar",
+      "hours": "7:00 AM \u2013 12:00 AM",
+      "latitude": 12.9783,
+      "longitude": 77.6409
+    },
+    {
+      "id": "r115",
+      "name": "Burger King Koramangala",
+      "neighborhood": "Koramangala",
+      "city": "Bengaluru",
+      "categories": [
+        "Cheap Eats",
+        "Late-Night Food"
+      ],
+      "shortDescription": "Flame-grilled quick meals near 5th Block.",
+      "priceLevel": 1,
+      "perfectFor": [
+        "Quick dinner"
+      ],
+      "recommendedByContactIds": [
+        "u4"
+      ],
+      "imageSymbol": "moon.stars.fill",
+      "address": "Koramangala",
+      "hours": "10:00 AM \u2013 12:00 AM",
+      "latitude": 12.9354,
+      "longitude": 77.6244
+    },
+    {
+      "id": "r116",
+      "name": "Punjabi Nawabi Koramangala",
+      "neighborhood": "Koramangala",
+      "city": "Bengaluru",
+      "categories": [
+        "North Indian"
+      ],
+      "shortDescription": "North Indian thalis and gravy favourites.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Family dinner"
+      ],
+      "recommendedByContactIds": [
+        "u2"
+      ],
+      "imageSymbol": "fork.knife",
+      "address": "Koramangala",
+      "hours": "12:00 \u2013 3:30 PM, 7:00 \u2013 11:00 PM",
+      "latitude": 12.9347,
+      "longitude": 77.6254
+    },
+    {
+      "id": "r117",
+      "name": "Meghana Foods Jayanagar",
+      "neighborhood": "Jayanagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Biryani"
+      ],
+      "shortDescription": "South Bengaluru Meghana biryani branch.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Dinner",
+        "Takeaway"
+      ],
+      "recommendedByContactIds": [
+        "u2",
+        "u10"
+      ],
+      "imageSymbol": "flame.fill",
+      "address": "Jayanagar",
+      "hours": "11:30 AM \u2013 11:00 PM",
+      "latitude": 12.9306,
+      "longitude": 77.5842
+    },
+    {
+      "id": "r118",
+      "name": "Vasudev Adiga's Jayanagar",
+      "neighborhood": "Jayanagar",
+      "city": "Bengaluru",
+      "categories": [
+        "South Indian",
+        "Filter Coffee",
+        "Cheap Eats"
+      ],
+      "shortDescription": "Everyday dosa and filter coffee.",
+      "priceLevel": 1,
+      "perfectFor": [
+        "Breakfast",
+        "Quick lunch"
+      ],
+      "recommendedByContactIds": [
+        "u1",
+        "u11"
+      ],
+      "imageSymbol": "leaf.fill",
+      "address": "Jayanagar",
+      "hours": "7:00 AM \u2013 10:30 PM",
+      "latitude": 12.9301,
+      "longitude": 77.5836
+    },
+    {
+      "id": "r119",
+      "name": "A2B Jayanagar",
+      "neighborhood": "Jayanagar",
+      "city": "Bengaluru",
+      "categories": [
+        "South Indian",
+        "Sweets & Desserts",
+        "Filter Coffee"
+      ],
+      "shortDescription": "Meals and sweets for family outings.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Family",
+        "Sweets"
+      ],
+      "recommendedByContactIds": [
+        "u1",
+        "u5"
+      ],
+      "imageSymbol": "leaf.fill",
+      "address": "Jayanagar",
+      "hours": "7:00 AM \u2013 11:00 PM",
+      "latitude": 12.9298,
+      "longitude": 77.5846
+    },
+    {
+      "id": "r120",
+      "name": "Biryani Treats",
+      "neighborhood": "HSR Layout",
+      "city": "Bengaluru",
+      "categories": [
+        "Biryani",
+        "Cloud Kitchens"
+      ],
+      "shortDescription": "Local biryani delivery favourite in HSR.",
+      "priceLevel": 1,
+      "perfectFor": [
+        "Wfh dinner",
+        "Takeaway"
+      ],
+      "recommendedByContactIds": [
+        "u10",
+        "u2"
+      ],
+      "imageSymbol": "bicycle",
+      "address": "HSR Layout",
+      "hours": "11:00 AM \u2013 11:30 PM",
+      "latitude": 12.9124,
+      "longitude": 77.6476
+    },
+    {
+      "id": "r121",
+      "name": "Chai Nayak",
+      "neighborhood": "HSR Layout",
+      "city": "Bengaluru",
+      "categories": [
+        "Cafe & Coffee",
+        "Breakfast & Snacks",
+        "Cheap Eats"
+      ],
+      "shortDescription": "Cutting chai and snacks for evening hangs.",
+      "priceLevel": 1,
+      "perfectFor": [
+        "Evening snack",
+        "Office"
+      ],
+      "recommendedByContactIds": [
+        "u3",
+        "u4"
+      ],
+      "imageSymbol": "cup.and.saucer.fill",
+      "address": "HSR Layout",
+      "hours": "8:00 AM \u2013 11:00 PM",
+      "latitude": 12.9119,
+      "longitude": 77.6468
+    },
+    {
+      "id": "r122",
+      "name": "The Fisherman's Wharf",
+      "neighborhood": "Whitefield",
+      "city": "Bengaluru",
+      "categories": [
+        "Seafood",
+        "Coastal"
+      ],
+      "shortDescription": "Goan-coastal style seafood dining.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Family dinner",
+        "Special"
+      ],
+      "recommendedByContactIds": [
+        "u6",
+        "u2"
+      ],
+      "imageSymbol": "fish.fill",
+      "address": "Whitefield",
+      "hours": "12:00 \u2013 3:30 PM, 7:00 \u2013 11:30 PM",
+      "latitude": 12.969,
+      "longitude": 77.749
+    },
+    {
+      "id": "r123",
+      "name": "Barbeque Nation Whitefield",
+      "neighborhood": "Whitefield",
+      "city": "Bengaluru",
+      "categories": [
+        "North Indian",
+        "Seafood"
+      ],
+      "shortDescription": "Live grill buffet popular with IT crowds.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Groups",
+        "Celebrations"
+      ],
+      "recommendedByContactIds": [
+        "u2",
+        "u9"
+      ],
+      "imageSymbol": "fork.knife",
+      "address": "Whitefield",
+      "hours": "12:00 \u2013 3:30 PM, 6:30 \u2013 11:00 PM",
+      "latitude": 12.9855,
+      "longitude": 77.737
+    },
+    {
+      "id": "r124",
+      "name": "Glen's Bakehouse Indiranagar",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Cafe & Coffee",
+        "Desserts"
+      ],
+      "shortDescription": "Pastries, coffee, and all-day cafe plates.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Breakfast",
+        "Dessert"
+      ],
+      "recommendedByContactIds": [
+        "u5",
+        "u3"
+      ],
+      "imageSymbol": "cup.and.saucer.fill",
+      "address": "Indiranagar",
+      "hours": "8:00 AM \u2013 11:00 PM",
+      "latitude": 12.9789,
+      "longitude": 77.6406
+    },
+    {
+      "id": "r125",
+      "name": "Belgian Waffle Co.",
+      "neighborhood": "Koramangala",
+      "city": "Bengaluru",
+      "categories": [
+        "Desserts",
+        "Cheap Eats"
+      ],
+      "shortDescription": "Waffles and dessert cravings for walk-ins.",
+      "priceLevel": 1,
+      "perfectFor": [
+        "Dessert",
+        "Date"
+      ],
+      "recommendedByContactIds": [
+        "u5",
+        "u9"
+      ],
+      "imageSymbol": "birthday.cake.fill",
+      "address": "Koramangala",
+      "hours": "11:00 AM \u2013 12:00 AM",
+      "latitude": 12.9352,
+      "longitude": 77.6249
+    },
+    {
+      "id": "r126",
+      "name": "Mamagoto",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Chinese",
+        "Healthy / Bowls"
+      ],
+      "shortDescription": "Pan-Asian bowls and share plates.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Friends",
+        "Date night"
+      ],
+      "recommendedByContactIds": [
+        "u6",
+        "u3"
+      ],
+      "imageSymbol": "fork.knife",
+      "address": "Indiranagar",
+      "hours": "12:00 \u2013 3:30 PM, 7:00 \u2013 11:30 PM",
+      "latitude": 12.978,
+      "longitude": 77.6418
+    },
+    {
+      "id": "r127",
+      "name": "Social Indiranagar",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Cafe & Coffee",
+        "Pizza & Pasta",
+        "Late-Night Food"
+      ],
+      "shortDescription": "Work-by-day, hangout-by-night social club vibe.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Work sessions",
+        "Friends"
+      ],
+      "recommendedByContactIds": [
+        "u3",
+        "u9"
+      ],
+      "imageSymbol": "cup.and.saucer.fill",
+      "address": "Indiranagar",
+      "hours": "9:00 AM \u2013 1:00 AM",
+      "latitude": 12.9776,
+      "longitude": 77.641
+    },
+    {
+      "id": "r128",
+      "name": "Brewski",
+      "neighborhood": "JP Nagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Cafe & Coffee",
+        "Pizza & Pasta"
+      ],
+      "shortDescription": "Rooftop brew-pub energy in south Bengaluru.",
+      "priceLevel": 3,
+      "perfectFor": [
+        "Friends",
+        "Evening"
+      ],
+      "recommendedByContactIds": [
+        "u9",
+        "u6"
+      ],
+      "imageSymbol": "fork.knife",
+      "address": "JP Nagar",
+      "hours": "12:00 \u2013 1:00 AM",
+      "latitude": 12.9085,
+      "longitude": 77.585
+    },
+    {
+      "id": "r129",
+      "name": "Nagarjuna JP Nagar",
+      "neighborhood": "JP Nagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Andhra",
+        "Biryani"
+      ],
+      "shortDescription": "Andhra meals for south Bengaluru families.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Family dinner"
+      ],
+      "recommendedByContactIds": [
+        "u2",
+        "u11"
+      ],
+      "imageSymbol": "flame.fill",
+      "address": "JP Nagar",
+      "hours": "12:00 \u2013 3:30 PM, 7:00 \u2013 11:00 PM",
+      "latitude": 12.9078,
+      "longitude": 77.586
+    },
+    {
+      "id": "r130",
+      "name": "Udupi Gardenia",
+      "neighborhood": "Jayanagar",
+      "city": "Bengaluru",
+      "categories": [
+        "South Indian",
+        "Cheap Eats",
+        "Filter Coffee"
+      ],
+      "shortDescription": "Local vegetarian meals and coffee.",
+      "priceLevel": 1,
+      "perfectFor": [
+        "Lunch",
+        "Budget"
+      ],
+      "recommendedByContactIds": [
+        "u1",
+        "u11"
+      ],
+      "imageSymbol": "leaf.fill",
+      "address": "Jayanagar",
+      "hours": "7:00 AM \u2013 10:00 PM",
+      "latitude": 12.9292,
+      "longitude": 77.5832
+    },
+    {
+      "id": "r131",
+      "name": "Homely Kitchen Indiranagar",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Cloud Kitchens",
+        "South Indian",
+        "North Indian"
+      ],
+      "shortDescription": "Homestyle thalis via delivery-first kitchens.",
+      "priceLevel": 1,
+      "perfectFor": [
+        "Wfh lunch",
+        "Budget"
+      ],
+      "recommendedByContactIds": [
+        "u3",
+        "u11"
+      ],
+      "imageSymbol": "bicycle",
+      "address": "Indiranagar",
+      "hours": "9:00 AM \u2013 10:00 PM",
+      "latitude": 12.9764,
+      "longitude": 77.6432
+    },
+    {
+      "id": "r132",
+      "name": "EatFit Indiranagar",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Healthy / Bowls",
+        "Cloud Kitchens"
+      ],
+      "shortDescription": "Calorie-aware meals for office and home.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Healthy lunch",
+        "Wfh"
+      ],
+      "recommendedByContactIds": [
+        "u3"
+      ],
+      "imageSymbol": "leaf.circle.fill",
+      "address": "Indiranagar",
+      "hours": "9:00 AM \u2013 10:00 PM",
+      "latitude": 12.9769,
+      "longitude": 77.6424
+    },
+    {
+      "id": "r133",
+      "name": "Faasos Indiranagar",
+      "neighborhood": "Indiranagar",
+      "city": "Bengaluru",
+      "categories": [
+        "Kebabs & Rolls",
+        "Cloud Kitchens",
+        "Cheap Eats"
+      ],
+      "shortDescription": "Wraps and rolls for quick delivery.",
+      "priceLevel": 1,
+      "perfectFor": [
+        "Quick dinner",
+        "Wfh"
+      ],
+      "recommendedByContactIds": [
+        "u12",
+        "u4"
+      ],
+      "imageSymbol": "bicycle",
+      "address": "Indiranagar",
+      "hours": "10:00 AM \u2013 12:00 AM",
+      "latitude": 12.9772,
+      "longitude": 77.6427
+    },
+    {
+      "id": "r134",
+      "name": "Behrouz Biryani",
+      "neighborhood": "HSR Layout",
+      "city": "Bengaluru",
+      "categories": [
+        "Biryani",
+        "Cloud Kitchens"
+      ],
+      "shortDescription": "Premium packaged biryani delivery.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Delivery",
+        "Dinner"
+      ],
+      "recommendedByContactIds": [
+        "u2",
+        "u10"
+      ],
+      "imageSymbol": "bicycle",
+      "address": "HSR Layout",
+      "hours": "11:00 AM \u2013 11:00 PM",
+      "latitude": 12.9121,
+      "longitude": 77.6482
+    },
+    {
+      "id": "r135",
+      "name": "Oven Story Pizza",
+      "neighborhood": "Koramangala",
+      "city": "Bengaluru",
+      "categories": [
+        "Pizza & Pasta",
+        "Cloud Kitchens"
+      ],
+      "shortDescription": "Delivery pizza with custom toppings.",
+      "priceLevel": 2,
+      "perfectFor": [
+        "Delivery",
+        "Friends"
+      ],
+      "recommendedByContactIds": [
+        "u9"
+      ],
+      "imageSymbol": "bicycle",
+      "address": "Koramangala",
+      "hours": "11:00 AM \u2013 12:00 AM",
+      "latitude": 12.935,
+      "longitude": 77.6236
     }
   ],
   "config": {
@@ -2624,7 +3912,10 @@
       "Malleshwaram, Bengaluru",
       "Whitefield, Bengaluru",
       "MG Road, Bengaluru",
-      "Basavanagudi, Bengaluru"
+      "Basavanagudi, Bengaluru",
+      "Residency Road, Bengaluru",
+      "Ulsoor, Bengaluru",
+      "Palace Road, Bengaluru"
     ],
     "gotoWeight": 3,
     "cityBoost": 1,

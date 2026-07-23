@@ -14,7 +14,7 @@ enum AuthError: LocalizedError {
         case .invalidPhone:
             return "Enter a valid 10-digit Indian mobile number."
         case .missingVerification:
-            return "Tap Send OTP first."
+            return "Tap Send code first."
         case .underlying(let message):
             return message
         }
@@ -77,7 +77,7 @@ final class AuthService: ObservableObject {
         let trimmed = code.trimmingCharacters(in: .whitespacesAndNewlines)
         guard otpReady || phoneNumber != nil else { throw AuthError.missingVerification }
         guard trimmed == Self.testOTP else {
-            throw AuthError.underlying("Invalid OTP. Use \(Self.testOTP).")
+            throw AuthError.underlying("Invalid verification code. Please try again.")
         }
 
         if FirebaseBootstrap.isConfigured {

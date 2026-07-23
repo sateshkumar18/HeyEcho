@@ -119,7 +119,7 @@ struct BusinessCard: View {
     }
 
     private var priceText: String {
-        String(repeating: "₹", count: max(result.business.priceLevel, 1))
+        result.business.priceLabel
     }
 }
 

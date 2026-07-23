@@ -35,7 +35,7 @@ struct ProfileView: View {
                     }
 
                     sectionBlock(title: "Trusted sources") {
-                        if appState.personalGotos.isEmpty {
+                        if appState.personalGotos.isEmpty && appState.pendingGotos.isEmpty {
                             Text("No GoTo's yet")
                                 .foregroundStyle(AppTheme.muted)
                         } else {
@@ -51,6 +51,23 @@ struct ProfileView: View {
                                                 .foregroundStyle(AppTheme.muted)
                                         }
                                         Spacer()
+                                    }
+                                }
+                                ForEach(appState.pendingGotos) { contact in
+                                    HStack(spacing: 12) {
+                                        AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 44)
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(contact.name)
+                                                .font(.subheadline.weight(.semibold))
+                                            Text("Pending invite")
+                                                .font(.caption)
+                                                .foregroundStyle(AppTheme.muted)
+                                        }
+                                        Spacer()
+                                        ShareLink(item: appState.inviteMessage(for: contact)) {
+                                            Image(systemName: "square.and.arrow.up")
+                                                .foregroundStyle(AppTheme.brand)
+                                        }
                                     }
                                 }
                             }
@@ -152,8 +169,9 @@ struct ProfileView: View {
                     #endif
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Backend")
+                        Text("Account")
                             .font(.system(.headline, design: .serif).weight(.semibold))
+                        #if DEBUG
                         HStack(spacing: 8) {
                             Circle()
                                 .fill(appState.isCloudEnabled ? AppTheme.trust : AppTheme.accent)
@@ -166,6 +184,7 @@ struct ProfileView: View {
                                     .scaleEffect(0.7)
                             }
                         }
+                        #endif
                         if appState.isCloudEnabled {
                             Button("Sign out") {
                                 appState.signOutCloud()
@@ -173,7 +192,7 @@ struct ProfileView: View {
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.brand)
                         } else {
-                            Text("Add GoogleService-Info.plist to enable Firebase cloud mode. See FIREBASE_SETUP.md.")
+                            Text("Sign in is available once cloud sync is enabled.")
                                 .font(.caption)
                                 .foregroundStyle(AppTheme.muted)
                         }
@@ -271,22 +290,33 @@ private struct EditGotosSheet: View {
             List {
                 Section("On HeyEcho · max 5") {
                     ForEach(appState.selectableGotos) { contact in
-                        let selected = appState.selectedGotoIds.contains(contact.id)
-                        Button {
-                            appState.toggleGoto(contact.id)
-                        } label: {
+                        gotoToggleRow(contact)
+                    }
+                }
+                Section("Local experts") {
+                    ForEach(appState.localExpertSuggestions) { contact in
+                        gotoToggleRow(contact)
+                    }
+                }
+                if !appState.inviteLaterContacts.isEmpty {
+                    Section("Invite · pending GoTo") {
+                        ForEach(appState.inviteLaterContacts.prefix(30)) { contact in
+                            let pending = appState.pendingGotoIds.contains(contact.id)
                             HStack {
                                 AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 36)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(contact.name)
-                                        .foregroundStyle(AppTheme.ink)
-                                    Text(contact.knownFor.prefix(2).joined(separator: " · "))
-                                        .font(.caption)
-                                        .foregroundStyle(AppTheme.muted)
-                                }
+                                Text(contact.name)
+                                    .foregroundStyle(AppTheme.ink)
                                 Spacer()
-                                Image(systemName: selected ? "checkmark.circle.fill" : "circle")
-                                    .foregroundStyle(selected ? AppTheme.brand : AppTheme.muted)
+                                ShareLink(item: appState.inviteMessage(for: contact)) {
+                                    Image(systemName: "square.and.arrow.up")
+                                        .foregroundStyle(AppTheme.brand)
+                                }
+                                Button {
+                                    appState.togglePendingGoto(contact.id)
+                                } label: {
+                                    Image(systemName: pending ? "checkmark.circle.fill" : "circle")
+                                        .foregroundStyle(pending ? AppTheme.brand : AppTheme.muted)
+                                }
                             }
                         }
                     }
@@ -297,6 +327,27 @@ private struct EditGotosSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
+            }
+        }
+    }
+
+    private func gotoToggleRow(_ contact: ContactPerson) -> some View {
+        let selected = appState.selectedGotoIds.contains(contact.id)
+        return Button {
+            appState.toggleGoto(contact.id)
+        } label: {
+            HStack {
+                AvatarCircle(name: contact.name, hue: contact.avatarHue, size: 36)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(contact.name)
+                        .foregroundStyle(AppTheme.ink)
+                    Text(contact.knownFor.prefix(2).joined(separator: " · "))
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.muted)
+                }
+                Spacer()
+                Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(selected ? AppTheme.brand : AppTheme.muted)
             }
         }
     }
